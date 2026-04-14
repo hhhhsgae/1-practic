@@ -3,7 +3,7 @@
 // ============================================================
 
 // Бұл плейсхолдер. GitHub Actions автоматты түрде нақты кілтпен ауыстырады
-const GITHUB_TOKEN = "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";
+const GITHUB_TOKEN = "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";
 
 const MODEL = "openai/gpt-4o-mini";
 const MAX_TOKENS = 1024;
