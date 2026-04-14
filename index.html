@@ -67,23 +67,23 @@
         </a>
       </article>
 
-      <!-- Card 3: Claude -->
+      <!-- Card 3: GitHub Models -->
       <article class="card" data-index="2">
         <div class="card-tag">Зерттеу</div>
         <div class="card-logo">✦</div>
-        <h2 class="card-title">Claude</h2>
+        <h2 class="card-title">GitHub Models</h2>
         <p class="card-desc">
-          Claude — Anthropic компаниясының қауіпсіз және сенімді болуға бағытталған AI моделі.
-          Ол ұзын мәтіндерді талдауда, күрделі пайымдауда және код жазуда өте жақсы нәтиже береді.
-          Конституциялық AI тәсілімен адам құндылықтарына сай жасалған.
+          GitHub Models — Microsoft және GitHub платформасының AI модельдері. GPT-4o, Llama 3, 
+          Phi-3 сияқты заманауи модельдерді тегін пайдалануға мүмкіндік береді.
+          Барлығы бір API арқылы қолжетімді.
         </p>
         <ul class="card-features">
-          <li>Ұзын мәтін талдауы</li>
-          <li>Күрделі пайымдау</li>
-          <li>Код генерациясы</li>
-          <li>Зерттеу мен жазу</li>
+          <li>GPT-4o, Llama 3, Phi-3</li>
+          <li>Тегін қолжетімділік</li>
+          <li>OpenAI үйлесімділік</li>
+          <li>Жылдам жауап</li>
         </ul>
-        <a href="https://claude.ai" target="_blank" rel="noopener" class="card-link">
+        <a href="https://github.com/marketplace/models" target="_blank" rel="noopener" class="card-link">
           Ресми сайт →
         </a>
       </article>
@@ -97,12 +97,12 @@
     <div class="chat-wrapper">
       <div class="chat-header">
         <span class="chat-status-dot"></span>
-        <span>Claude AI байланысы</span>
+        <span>GitHub Models AI байланысы</span>
         <span class="counter-badge">Сұраныстар: <strong id="requestCount">0</strong></span>
       </div>
       <div class="chat-messages" id="chatMessages">
         <div class="chat-msg assistant">
-          <div class="msg-bubble">Сәлем! Мен Claude AI-мін. Бағдарламалау немесе ЖИ туралы кез келген сұрақ қойыңыз! 👋</div>
+          <div class="msg-bubble">Сәлем! Мен GitHub Models AI-мін. Бағдарламалау немесе ЖИ туралы кез келген сұрақ қойыңыз! 🚀</div>
         </div>
       </div>
       <div class="chat-input-row">
@@ -116,8 +116,9 @@
         <button id="sendBtn" class="send-btn">Жіберу</button>
       </div>
       <p class="api-note">
-        ⚠️ Чатты іске қосу үшін <code>script.js</code> файлына өзіңіздің Claude API кілтіңізді енгізіңіз.
-        API кілтін <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> сайтынан алыңыз.
+        ✅ GitHub Models API — тегін. Чат жұмыс істеуі үшін GitHub токені қажет.
+        Токенді <a href="https://github.com/settings/tokens" target="_blank">GitHub Settings → Tokens</a> сайтынан алыңыз.
+        <strong>Рұқсат: models:read</strong>
       </p>
     </div>
   </section>
@@ -131,10 +132,9 @@
       <div class="reflection-block">
         <h3>Қандай құрал ең көп көмектесті?</h3>
         <p>
-          Осы жұмысты орындауда маған Claude ең көп көмектесті. Оның HTML, CSS және JavaScript туралы
+          Осы жұмысты орындауда маған GitHub Models ең көп көмектесті. Оның HTML, CSS және JavaScript туралы
           түсіндірмелері өте анық және деталды болды. Мысалы, Flexbox пен CSS Grid айырмашылығын
-          нақты мысалдармен түсіндіріп берді. GitHub Copilot IDE-де код жазғанда өте ыңғайлы —
-          функция атауын жазсаң, толық реализацияны ұсынады.
+          нақты мысалдармен түсіндіріп берді.
         </p>
       </div>
 
@@ -142,9 +142,7 @@
         <h3>ЖИ нені дұрыс немесе ыңғайсыз жасады?</h3>
         <p>
           ЖИ HTML структурасын жасауда өте жақсы жұмыс жасады, бірақ кейде тым күрделі немесе
-          контекске сай емес код ұсынды. Мысалы, ChatGPT кейде React-тегі компонент ретінде
-          жазып берді, ал мен таза JavaScript қолдануым керек болды. Мұны нақтырақ prompt жазу
-          арқылы түзеттім: «тек vanilla JS, ешқандай фреймворксіз» деп нақты айттым.
+          контекске сай емес код ұсынды. Нақтырақ prompt жазу арқылы мұны түзетуге болады.
         </p>
       </div>
 
@@ -153,9 +151,7 @@
         <p>
           Менің ойымша, 5 жылдан кейін ЖИ рутиналық код жазуды толық автоматтандырады. Әзірлеушілер
           синтакс жаттаудан гөрі архитектура жасауға, бизнес логикасын шешуге және ЖИ шығарған кодты
-          тексеруге уақыт жұмсайды. «Prompt engineering» жаңа маңызды дағды болады. Дегенмен,
-          негізгі алгоритмдер мен деректер құрылымдарын терең түсінетін мамандар әрдайым бағалы болады —
-          себебі ЖИ қателерін тек тереңдік білім арқылы анықтауға болады.
+          тексеруге уақыт жұмсайды.
         </p>
       </div>
     </div>
