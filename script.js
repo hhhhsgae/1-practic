@@ -2,7 +2,7 @@
 // GEMINI API (CORS PROXY арқылы)
 // ============================================================
 
-const API_KEY = "gen-lang-client-0890551824"; // Осы жерге нақты кілтіңізді қойыңыз
+const API_KEY = "AIzaSyAURaVDG3-8uHGXKZCbuvZUG8srKVdoE2s"; // Осы жерге нақты кілтіңізді қойыңыз
 const MODEL = "gemini-1.5-flash"; // немесе gemini-2.0-flash, gemini-pro
 
 let requestCount = 0;
