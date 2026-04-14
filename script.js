@@ -1,18 +1,13 @@
 // ============================================================
-// OpenRouter API (GPT-4o-mini) – бесплатно, работает из браузера
+// GEMINI API (CORS PROXY арқылы)
 // ============================================================
 
-const OPENROUTER_KEY = "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";  // Вставьте сюда ваш ключ
+const API_KEY = "gen-lang-client-0890551824"; // Осы жерге нақты кілтіңізді қойыңыз
+const MODEL = "gemini-1.5-flash"; // немесе gemini-2.0-flash, gemini-pro
 
-// ============================================================
-// КҮЙЛЕР (STATE)
-// ============================================================
 let requestCount = 0;
 let chatHistory = [];
 
-// ============================================================
-// DOM ЭЛЕМЕНТТЕРІ
-// ============================================================
 const chatMessages = document.getElementById("chatMessages");
 const userInput = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
@@ -20,9 +15,6 @@ const requestCountEl = document.getElementById("requestCount");
 const themeToggle = document.getElementById("themeToggle");
 const themeIcon = themeToggle.querySelector(".theme-icon");
 
-// ============================================================
-// ФУНКЦИЯЛАР
-// ============================================================
 function appendMessage(role, text, isTyping = false) {
   const msgDiv = document.createElement("div");
   msgDiv.className = `chat-msg ${role}${isTyping ? " typing" : ""}`;
@@ -46,10 +38,7 @@ function incrementCounter() {
   requestCountEl.textContent = requestCount;
 }
 
-// ============================================================
-// OPENROUTER API (ЖҰМЫС ІСТЕЙДІ 100%)
-// ============================================================
-async function sendToOpenRouter(userText) {
+async function sendToGemini(userText) {
   chatHistory.push({ role: "user", content: userText });
 
   const typingEl = appendMessage("assistant", "Жауап жазылуда...", true);
@@ -57,22 +46,26 @@ async function sendToOpenRouter(userText) {
   incrementCounter();
 
   try {
-    const messages = chatHistory.map(msg => ({
-      role: msg.role,
-      content: msg.content
+    const contents = chatHistory.map(msg => ({
+      role: msg.role === "user" ? "user" : "model",
+      parts: [{ text: msg.content }]
     }));
 
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    // CORS прокси сервері (тегін, бірақ бір рет рұқсат керек)
+    const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+    const targetUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
+
+    const response = await fetch(proxyUrl + targetUrl, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${OPENROUTER_KEY}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "openai/gpt-4o-mini",
-        messages: messages,
-        max_tokens: 1024,
-        temperature: 0.7
+        contents: contents,
+        generationConfig: {
+          maxOutputTokens: 1024,
+          temperature: 0.7
+        }
       })
     });
 
@@ -82,21 +75,21 @@ async function sendToOpenRouter(userText) {
     }
 
     const data = await response.json();
-    const assistantText = data.choices?.[0]?.message?.content || "Жауап алынбады.";
+    const assistantText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Жауап алынбады.";
 
     chatHistory.push({ role: "assistant", content: assistantText });
     updateMessage(typingEl, assistantText);
 
   } catch (err) {
-    console.error("OpenRouter қатесі:", err);
+    console.error("Gemini қатесі:", err);
     let errMsg = "⚠️ Қате: " + err.message;
 
-    if (OPENROUTER_KEY === "ВАШ_КЛЮЧ_OPENROUTER") {
-      errMsg = "⚠️ OpenRouter кілті орнатылмаған. https://openrouter.ai/keys сайтынан алыңыз.";
-    } else if (err.message.includes("401")) {
-      errMsg = "⚠️ Кілт жарамсыз. Кілтті тексеріңіз.";
-    } else if (err.message.includes("fetch") || err.message.includes("network")) {
-      errMsg = "⚠️ Интернет байланысын тексеріңіз.";
+    if (err.message.includes("Failed to fetch") || err.message.includes("CORS")) {
+      errMsg = "⚠️ CORS прокси қажет. Мына сілтемені бір рет ашыңыз: https://cors-anywhere.herokuapp.com/ → 'Request temporary access' басыңыз.";
+    } else if (err.message.includes("API key")) {
+      errMsg = "⚠️ API кілті дұрыс емес. Тексеріңіз.";
+    } else if (err.message.includes("model")) {
+      errMsg = `⚠️ "${MODEL}" моделі жұмыс істемейді. gemini-1.5-flash қолданып көріңіз.`;
     }
 
     updateMessage(typingEl, errMsg);
@@ -112,7 +105,7 @@ function handleSend() {
   if (!text) return;
   appendMessage("user", text);
   userInput.value = "";
-  sendToOpenRouter(text);
+  sendToGemini(text);
 }
 
 sendBtn.addEventListener("click", handleSend);
@@ -123,11 +116,9 @@ userInput.addEventListener("keydown", (e) => {
   }
 });
 
-chatHistory.push({ role: "assistant", content: "Сәлем! Мен OpenRouter AI-мін. Сұрақ қойыңыз! 🚀" });
+chatHistory.push({ role: "assistant", content: "Сәлем! Мен Gemini AI-мін. Сұрақ қойыңыз! 🚀" });
 
-// ============================================================
-// ТАҚЫРЫП АУЫСТЫРУ
-// ============================================================
+// Тақырып ауыстыру және анимациялар (өзгеріссіз)
 function toggleTheme() {
   const isDark = document.body.classList.toggle("dark-mode");
   themeIcon.textContent = isDark ? "☽" : "☀";
@@ -144,9 +135,6 @@ function initTheme() {
 }
 initTheme();
 
-// ============================================================
-// КАРТОЧКАЛАР АНИМАЦИЯСЫ
-// ============================================================
 function initCardAnimations() {
   const cards = document.querySelectorAll(".card");
   const observer = new IntersectionObserver((entries) => {
