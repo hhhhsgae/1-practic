@@ -1,5 +1,5 @@
 // API_KEY-ті осы жерге енгізіңіз
-const API_KEY = "YOUR_GEMINI_API_KEY_HERE";
+const API_KEY = "AIzaSyAURaVDG3-8uHGXKZCbuvZUG8srKVdoE2s";
 const MODEL = "gemini-2.0-flash";
 const MAX_TOKENS = 1024;
 
