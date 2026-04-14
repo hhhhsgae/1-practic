@@ -1,21 +1,17 @@
 // ============================================================
-// GitHub Models API — KEY IS HIDDEN
+// OpenRouter API (GPT-4o-mini) – бесплатно, работает из браузера
 // ============================================================
 
-// Бұл плейсхолдер. GitHub Actions автоматты түрде нақты кілтпен ауыстырады
-const GITHUB_TOKEN = "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";
-
-const MODEL = "openai/gpt-4o-mini";
-const MAX_TOKENS = 1024;
+const OPENROUTER_KEY = "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";  // Вставьте сюда ваш ключ
 
 // ============================================================
-// STATE
+// КҮЙЛЕР (STATE)
 // ============================================================
 let requestCount = 0;
 let chatHistory = [];
 
 // ============================================================
-// DOM
+// DOM ЭЛЕМЕНТТЕРІ
 // ============================================================
 const chatMessages = document.getElementById("chatMessages");
 const userInput = document.getElementById("userInput");
@@ -25,7 +21,7 @@ const themeToggle = document.getElementById("themeToggle");
 const themeIcon = themeToggle.querySelector(".theme-icon");
 
 // ============================================================
-// UI FUNCTIONS
+// ФУНКЦИЯЛАР
 // ============================================================
 function appendMessage(role, text, isTyping = false) {
   const msgDiv = document.createElement("div");
@@ -51,9 +47,9 @@ function incrementCounter() {
 }
 
 // ============================================================
-// GITHUB MODELS API
+// OPENROUTER API (ЖҰМЫС ІСТЕЙДІ 100%)
 // ============================================================
-async function sendToGitHubModels(userText) {
+async function sendToOpenRouter(userText) {
   chatHistory.push({ role: "user", content: userText });
 
   const typingEl = appendMessage("assistant", "Жауап жазылуда...", true);
@@ -66,16 +62,16 @@ async function sendToGitHubModels(userText) {
       content: msg.content
     }));
 
-    const response = await fetch("https://models.github.ai/inference/chat/completions", {
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${GITHUB_TOKEN}`
+        "Authorization": `Bearer ${OPENROUTER_KEY}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: MODEL,
+        model: "openai/gpt-4o-mini",
         messages: messages,
-        max_tokens: MAX_TOKENS,
+        max_tokens: 1024,
         temperature: 0.7
       })
     });
@@ -92,17 +88,15 @@ async function sendToGitHubModels(userText) {
     updateMessage(typingEl, assistantText);
 
   } catch (err) {
-    console.error("GitHub API қатесі:", err);
+    console.error("OpenRouter қатесі:", err);
     let errMsg = "⚠️ Қате: " + err.message;
 
-    if (err.message.includes("401")) {
-      errMsg = "⚠️ GitHub токені жарамсыз. 'models:read' рұқсатын тексеріңіз.";
-    } else if (err.message.includes("403")) {
-      errMsg = "⚠️ GitHub Models API-ға рұқсат жоқ. https://github.com/marketplace/models сайтынан рұқсат алыңыз.";
-    } else if (err.message.includes("CORS") || err.message.includes("fetch")) {
-      errMsg = "⚠️ CORS қатесі. https://cors-anywhere.herokuapp.com/ сайтын бір рет ашып, 'Request temporary access' басыңыз.";
-    } else if (err.message.includes("model")) {
-      errMsg = `⚠️ Модель табылмады: ${MODEL}. openai/gpt-4o-mini қолданып көріңіз.`;
+    if (OPENROUTER_KEY === "ВАШ_КЛЮЧ_OPENROUTER") {
+      errMsg = "⚠️ OpenRouter кілті орнатылмаған. https://openrouter.ai/keys сайтынан алыңыз.";
+    } else if (err.message.includes("401")) {
+      errMsg = "⚠️ Кілт жарамсыз. Кілтті тексеріңіз.";
+    } else if (err.message.includes("fetch") || err.message.includes("network")) {
+      errMsg = "⚠️ Интернет байланысын тексеріңіз.";
     }
 
     updateMessage(typingEl, errMsg);
@@ -118,7 +112,7 @@ function handleSend() {
   if (!text) return;
   appendMessage("user", text);
   userInput.value = "";
-  sendToGitHubModels(text);
+  sendToOpenRouter(text);
 }
 
 sendBtn.addEventListener("click", handleSend);
@@ -129,11 +123,10 @@ userInput.addEventListener("keydown", (e) => {
   }
 });
 
-// Бастапқы хабарлама
-chatHistory.push({ role: "assistant", content: "Сәлем! Мен GitHub Models AI-мін. Сұрақ қойыңыз! 🚀" });
+chatHistory.push({ role: "assistant", content: "Сәлем! Мен OpenRouter AI-мін. Сұрақ қойыңыз! 🚀" });
 
 // ============================================================
-// THEME
+// ТАҚЫРЫП АУЫСТЫРУ
 // ============================================================
 function toggleTheme() {
   const isDark = document.body.classList.toggle("dark-mode");
@@ -152,7 +145,7 @@ function initTheme() {
 initTheme();
 
 // ============================================================
-// CARD ANIMATIONS
+// КАРТОЧКАЛАР АНИМАЦИЯСЫ
 // ============================================================
 function initCardAnimations() {
   const cards = document.querySelectorAll(".card");
