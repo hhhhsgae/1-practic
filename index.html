@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Әзірлеушіге арналған ЖИ-құралдары</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <div class="header-inner">
+      <h1 class="site-title">Әзірлеушіге арналған<br/><span class="accent">ЖИ-құралдары</span></h1>
+      <button id="themeToggle" class="theme-btn" aria-label="Тақырыпты ауыстыру">
+        <span class="theme-icon">☀</span>
+        <span class="theme-label">Тақырып</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== CARDS SECTION ===== -->
+  <section class="cards-section">
+    <div class="section-label">// ЖИ-құралдар</div>
+    <div class="cards-grid">
+
+      <!-- Card 1: GitHub Copilot -->
+      <article class="card" data-index="0">
+        <div class="card-tag">Код</div>
+        <div class="card-logo">🤖</div>
+        <h2 class="card-title">GitHub Copilot</h2>
+        <p class="card-desc">
+          GitHub Copilot — бағдарламашыларға нақты уақытта код жазуға көмектесетін AI жүйесі.
+          Ол OpenAI Codex негізінде жасалған және IDE-де тікелей жұмыс істейді.
+          Функция атауы мен түсіндірмесі бойынша толық код блоктарын ұсына алады.
+        </p>
+        <ul class="card-features">
+          <li>Автоматты код толықтыру</li>
+          <li>Функцияларды генерациялау</li>
+          <li>Тест жазу</li>
+          <li>30+ тіл қолдауы</li>
+        </ul>
+        <a href="https://github.com/features/copilot" target="_blank" rel="noopener" class="card-link">
+          Ресми сайт →
+        </a>
+      </article>
+
+      <!-- Card 2: ChatGPT -->
+      <article class="card" data-index="1">
+        <div class="card-tag">Чат</div>
+        <div class="card-logo">💬</div>
+        <h2 class="card-title">ChatGPT</h2>
+        <p class="card-desc">
+          ChatGPT — OpenAI компаниясының GPT моделіне негізделген диалогтық жасанды интеллект.
+          Ол сұрақтарға жауап беруден бастап, код жазуға, мәтін аударуға дейін кең мүмкіндіктер ұсынады.
+          GPT-4o нұсқасы суреттерді де талдай алады.
+        </p>
+        <ul class="card-features">
+          <li>Сұрақ-жауап</li>
+          <li>Код жазу және түзету</li>
+          <li>Мәтін аудару</li>
+          <li>Суреттерді талдау</li>
+        </ul>
+        <a href="https://chat.openai.com" target="_blank" rel="noopener" class="card-link">
+          Ресми сайт →
+        </a>
+      </article>
+
+      <!-- Card 3: GitHub Models -->
+      <article class="card" data-index="2">
+        <div class="card-tag">Зерттеу</div>
+        <div class="card-logo">✦</div>
+        <h2 class="card-title">GitHub Models</h2>
+        <p class="card-desc">
+          GitHub Models — Microsoft және GitHub платформасының AI модельдері. GPT-4o, Llama 3, 
+          Phi-3 сияқты заманауи модельдерді тегін пайдалануға мүмкіндік береді.
+          Барлығы бір API арқылы қолжетімді.
+        </p>
+        <ul class="card-features">
+          <li>GPT-4o, Llama 3, Phi-3</li>
+          <li>Тегін қолжетімділік</li>
+          <li>OpenAI үйлесімділік</li>
+          <li>Жылдам жауап</li>
+        </ul>
+        <a href="https://github.com/marketplace/models" target="_blank" rel="noopener" class="card-link">
+          Ресми сайт →
+        </a>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ===== AI CHAT SECTION ===== -->
+  <section class="chat-section">
+    <div class="section-label">// ЖИ-чат</div>
+    <div class="chat-wrapper">
+      <div class="chat-header">
+        <span class="chat-status-dot"></span>
+        <span>GitHub Models AI байланысы</span>
+        <span class="counter-badge">Сұраныстар: <strong id="requestCount">0</strong></span>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-msg assistant">
+          <div class="msg-bubble">Сәлем! Мен GitHub Models AI-мін. Бағдарламалау немесе ЖИ туралы кез келген сұрақ қойыңыз! 🚀</div>
+        </div>
+      </div>
+      <div class="chat-input-row">
+        <input
+          type="text"
+          id="userInput"
+          class="chat-input"
+          placeholder="Сұрағыңызды жазыңыз..."
+          autocomplete="off"
+        />
+        <button id="sendBtn" class="send-btn">Жіберу</button>
+      </div>
+      <p class="api-note">
+        ✅ GitHub Models API — тегін. Чат жұмыс істеуі үшін GitHub токені қажет.
+        Токенді <a href="https://github.com/settings/tokens" target="_blank">GitHub Settings → Tokens</a> сайтынан алыңыз.
+        <strong>Рұқсат: models:read</strong>
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== REFLECTION SECTION ===== -->
+  <section class="reflection-section">
+    <div class="section-label">// Менің тәжірибем</div>
+    <div class="reflection-card">
+      <h2>Менің тәжірибем</h2>
+
+      <div class="reflection-block">
+        <h3>Қандай құрал ең көп көмектесті?</h3>
+        <p>
+          Осы жұмысты орындауда маған GitHub Models ең көп көмектесті. Оның HTML, CSS және JavaScript туралы
+          түсіндірмелері өте анық және деталды болды. Мысалы, Flexbox пен CSS Grid айырмашылығын
+          нақты мысалдармен түсіндіріп берді.
+        </p>
+      </div>
+
+      <div class="reflection-block">
+        <h3>ЖИ нені дұрыс немесе ыңғайсыз жасады?</h3>
+        <p>
+          ЖИ HTML структурасын жасауда өте жақсы жұмыс жасады, бірақ кейде тым күрделі немесе
+          контекске сай емес код ұсынды. Нақтырақ prompt жазу арқылы мұны түзетуге болады.
+        </p>
+      </div>
+
+      <div class="reflection-block">
+        <h3>ЖИ 5 жылдан кейін әзірлеушілерді қалай өзгертеді?</h3>
+        <p>
+          Менің ойымша, 5 жылдан кейін ЖИ рутиналық код жазуды толық автоматтандырады. Әзірлеушілер
+          синтакс жаттаудан гөрі архитектура жасауға, бизнес логикасын шешуге және ЖИ шығарған кодты
+          тексеруге уақыт жұмсайды.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <p>Практикалық жұмыс №1 — ЖИ веб-әзірлеуде &nbsp;|&nbsp; 2025</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
