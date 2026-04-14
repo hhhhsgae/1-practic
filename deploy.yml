@@ -14,7 +14,7 @@ jobs:
 
       - name: Hide API key in script.js
         run: |
-          sed -i "s|GITHUB_TOKEN_PLACEHOLDER|${{ secrets.GITHUB_TOKEN_SECRET }}|g" script.js
+          sed -i "s|GITHUB_TOKEN_PLACEHOLDER|${{ secrets.TOKEN_SECRET }}|g" script.js
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
