@@ -1,9 +1,9 @@
 // ============================================================
-// GitHub Models API — KEY IS HIDDEN (GITHUB_TOKEN_PLACEHOLDER)
+// GitHub Models API — KEY IS HIDDEN
 // ============================================================
 
 // Бұл плейсхолдер. GitHub Actions автоматты түрде нақты кілтпен ауыстырады
-const GITHUB_TOKEN = "GITHUB_TOKEN_PLACEHOLDER";
+const GITHUB_TOKEN = "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";
 
 const MODEL = "openai/gpt-4o-mini";
 const MAX_TOKENS = 1024;
@@ -51,7 +51,7 @@ function incrementCounter() {
 }
 
 // ============================================================
-// GITHUB MODELS API (KEY HIDDEN)
+// GITHUB MODELS API
 // ============================================================
 async function sendToGitHubModels(userText) {
   chatHistory.push({ role: "user", content: userText });
@@ -92,15 +92,17 @@ async function sendToGitHubModels(userText) {
     updateMessage(typingEl, assistantText);
 
   } catch (err) {
-    console.error("GitHub API error:", err);
+    console.error("GitHub API қатесі:", err);
     let errMsg = "⚠️ Қате: " + err.message;
 
     if (err.message.includes("401")) {
-      errMsg = "⚠️ GitHub токені жарамсыз немесе рұқсат жоқ. 'models:read' рұқсатын тексеріңіз.";
+      errMsg = "⚠️ GitHub токені жарамсыз. 'models:read' рұқсатын тексеріңіз.";
+    } else if (err.message.includes("403")) {
+      errMsg = "⚠️ GitHub Models API-ға рұқсат жоқ. https://github.com/marketplace/models сайтынан рұқсат алыңыз.";
     } else if (err.message.includes("CORS") || err.message.includes("fetch")) {
       errMsg = "⚠️ CORS қатесі. https://cors-anywhere.herokuapp.com/ сайтын бір рет ашып, 'Request temporary access' басыңыз.";
     } else if (err.message.includes("model")) {
-      errMsg = `⚠️ Модель табылмады: ${MODEL}`;
+      errMsg = `⚠️ Модель табылмады: ${MODEL}. openai/gpt-4o-mini қолданып көріңіз.`;
     }
 
     updateMessage(typingEl, errMsg);
@@ -127,6 +129,7 @@ userInput.addEventListener("keydown", (e) => {
   }
 });
 
+// Бастапқы хабарлама
 chatHistory.push({ role: "assistant", content: "Сәлем! Мен GitHub Models AI-мін. Сұрақ қойыңыз! 🚀" });
 
 // ============================================================
