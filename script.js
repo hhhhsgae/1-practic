@@ -2,19 +2,19 @@
  * script.js — Практикалық жұмыс №1
  * Барлық интерактивтілік: ЖИ-чат, тақырып ауысу, анимациялар, санауыш
  *
- * ⚠️ API_KEY өрісіне өзіңіздің Anthropic кілтіңізді енгізіңіз.
- *    console.anthropic.com → API Keys
+ * ⚠️ API_KEY өрісіне өзіңіздің Google Gemini API кілтіңізді енгізіңіз.
+ *    https://aistudio.google.com/app/apikey → Create API Key
  */
 
 // ============================================================
 // КОНФИГУРАЦИЯ
 // ============================================================
 
-/** @type {string} Anthropic API кілті — осы жерге енгізіңіз */
-const API_KEY = "YOUR_CLAUDE_API_KEY_HERE";
+/** @type {string} Google Gemini API кілті — осы жерге енгізіңіз */
+const API_KEY = "AIzaSyAURaVDG3-8uHGXKZCbuvZUG8srKVdoE2s";
 
-/** @type {string} Қолданылатын Claude моделі */
-const MODEL = "claude-opus-4-5";
+/** @type {string} Қолданылатын Gemini моделі */
+const MODEL = "gemini-2.0-flash"; // немесе gemini-1.5-pro
 
 /** @type {number} Максималды токен саны */
 const MAX_TOKENS = 1024;
@@ -85,10 +85,28 @@ function incrementCounter() {
 }
 
 /**
- * Claude API-ге сұраныс жібереді және жауапты чатта көрсетеді.
+ * Чат тарихын Gemini API форматына түрлендіреді
+ * @returns {Array} Gemini contents массиві
+ */
+function formatChatHistoryForGemini() {
+  // Gemini үшін тарихты рөл бойынша түрлендіру
+  const contents = [];
+  
+  for (const msg of chatHistory) {
+    contents.push({
+      role: msg.role === "user" ? "user" : "model",
+      parts: [{ text: msg.content }]
+    });
+  }
+  
+  return contents;
+}
+
+/**
+ * Gemini API-ге сұраныс жібереді және жауапты чатта көрсетеді.
  * @param {string} userText - Пайдаланушы енгізген мәтін
  */
-async function sendToClaudeAPI(userText) {
+async function sendToGeminiAPI(userText) {
   // Пайдаланушы хабарламасын тарихқа қосу
   chatHistory.push({ role: "user", content: userText });
 
@@ -99,30 +117,41 @@ async function sendToClaudeAPI(userText) {
   incrementCounter();
 
   try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const contents = formatChatHistoryForGemini();
+    
+    const requestBody = {
+      contents: contents,
+      generationConfig: {
+        maxOutputTokens: MAX_TOKENS,
+        temperature: 0.7,
+        topP: 0.95
+      },
+      systemInstruction: {
+        parts: [{ text: "Сен ЖИ-бағдарламалау бойынша көмекшісің. Қысқа, анық жауаптар бер. Қазақ немесе орыс тілінде сұрақ берілсе, сол тілде жауап бер." }]
+      }
+    };
+
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
+    
+    const response = await fetch(url, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "x-api-key": API_KEY,
-        "anthropic-version": "2023-06-01",
-        // CORS proxy арқылы жұмыс жасау үшін:
-        "anthropic-dangerous-direct-browser-access": "true"
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        model: MODEL,
-        max_tokens: MAX_TOKENS,
-        system: "Сен ЖИ-бағдарламалау бойынша көмекшісің. Қысқа, анық жауаптар бер. Қазақ немесе орыс тілінде сұрақ берілсе, сол тілде жауап бер.",
-        messages: chatHistory
-      })
+      body: JSON.stringify(requestBody)
     });
 
     if (!response.ok) {
       const errData = await response.json().catch(() => ({}));
-      throw new Error(errData.error?.message || `HTTP ${response.status}`);
+      let errorMessage = `HTTP ${response.status}`;
+      if (errData.error?.message) {
+        errorMessage = errData.error.message;
+      }
+      throw new Error(errorMessage);
     }
 
     const data = await response.json();
-    const assistantText = data.content?.[0]?.text || "Жауап алынбады.";
+    const assistantText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Жауап алынбады.";
 
     // Жауапты тарихқа қосу
     chatHistory.push({ role: "assistant", content: assistantText });
@@ -131,16 +160,18 @@ async function sendToClaudeAPI(userText) {
     updateMessage(typingEl, assistantText);
 
   } catch (err) {
-    console.error("Claude API қатесі:", err);
+    console.error("Gemini API қатесі:", err);
 
     let errMsg = "⚠️ Қате: " + err.message;
 
-    if (API_KEY === "YOUR_CLAUDE_API_KEY_HERE") {
-      errMsg = "⚠️ API кілті орнатылмаған. script.js файлындағы API_KEY өрісіне кілтіңізді енгізіңіз.";
-    } else if (err.message.includes("401")) {
+    if (API_KEY === "YOUR_GEMINI_API_KEY_HERE") {
+      errMsg = "⚠️ Gemini API кілті орнатылмаған. script.js файлындағы API_KEY өрісіне кілтіңізді енгізіңіз. Кілтті https://aistudio.google.com/app/apikey сайтынан алыңыз.";
+    } else if (err.message.includes("API key") || err.message.includes("403")) {
       errMsg = "⚠️ API кілті дұрыс емес. Тексеріп қайталаңыз.";
     } else if (err.message.includes("CORS") || err.message.includes("Failed to fetch")) {
       errMsg = "⚠️ CORS қатесі. Кодты Node.js/сервер арқылы іске қосыңыз немесе прокси пайдаланыңыз.";
+    } else if (err.message.includes("model") || err.message.includes("404")) {
+      errMsg = `⚠️ "${MODEL}" моделі табылмады. gemini-2.0-flash немесе gemini-1.5-pro қолданыңыз.`;
     }
 
     updateMessage(typingEl, errMsg);
@@ -163,7 +194,7 @@ function handleSend() {
   appendMessage("user", text);
   userInput.value = "";
 
-  sendToClaudeAPI(text);
+  sendToGeminiAPI(text);
 }
 
 // Батырма оқиғасы
@@ -176,6 +207,9 @@ userInput.addEventListener("keydown", function (e) {
     handleSend();
   }
 });
+
+// Бастапқы тарихқа қош келу хабарламасын қосу
+chatHistory.push({ role: "assistant", content: "Сәлем! Мен Gemini AI-мін. Бағдарламалау немесе ЖИ туралы кез келген сұрақ қойыңыз! 👋" });
 
 // ============================================================
 // 2. ТАҚЫРЫП АУЫСТЫРУ (DARK / LIGHT MODE)
@@ -223,12 +257,12 @@ function initCardAnimations() {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           entry.target.classList.add("visible");
-          observer.unobserve(entry.target); // Бір рет анимация
+          observer.unobserve(entry.target);
         }
       });
     },
     {
-      threshold: 0.12,   // Карточканың 12% көрінгенде іске қосу
+      threshold: 0.12,
       rootMargin: "0px"
     }
   );
