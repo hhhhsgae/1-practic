@@ -1,7 +1,7 @@
-// ai-assistant.js — AI Career Agent (Gemini API)
+// ai-assistant.js — AI Career Agent (DeepSeek API)
 
-const GEMINI_API_KEY = 'AIzaSyBzuov-U403Z3VpwZiYxVHjl6aHx3Q_Ipc';
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+const DEEPSEEK_API_KEY = 'sk-0a18f1d81d674d4f9a02eb5aad6cbe73'; // ← ӨЗ КЛЮЧЫҢЫЗДЫ ОСЫ ЖЕРГЕ ҚОЙЫҢЫЗ
+const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
 
 class AIAssistant {
     constructor() {
@@ -16,19 +16,19 @@ class AIAssistant {
             kk: {
                 btnLabel:    '<i class="fas fa-robot"></i> AI Көмекші',
                 headerTitle: '<i class="fas fa-microchip"></i> AI Career Көмекші',
-                greeting:    'Сәлем! Мен AI Career Agent көмекшісімін (Gemini). Бағдарламалау, ЖИ-құралдары немесе мамандық туралы кез келген сұрақ қойыңыз! 🚀',
+                greeting:    'Сәлем! Мен AI Career Agent көмекшісімін (DeepSeek). Бағдарламалау, ЖИ-құралдары немесе мамандық туралы кез келген сұрақ қойыңыз! 🚀',
                 placeholder: 'Сұрағыңызды жазыңыз...',
                 errorMsg:    'Кешіріңіз, қазір жауап бере алмаймын. Қате: ',
-                systemPrompt:'Сен AI Career Agent ассистентісің. Бағдарламалау, мамандық таңдау, ЖИ-құралдары туралы кеңес бересің. Қазақ тілінде, қысқа және пайдалы жауап бер.',
+                systemPrompt: 'Сен AI Career Agent ассистентісің. Бағдарламалау, мамандық таңдау, ЖИ-құралдары туралы кеңес бересің. Қазақ тілінде, қысқа және пайдалы жауап бер.',
                 clearBtn:    '<i class="fas fa-trash-alt"></i> Тарихты тазалау',
             },
             ru: {
                 btnLabel:    '<i class="fas fa-robot"></i> AI Помощник',
                 headerTitle: '<i class="fas fa-microchip"></i> AI Career Помощник',
-                greeting:    'Привет! Я помощник AI Career Agent (Gemini). Задайте любой вопрос о программировании, ИИ-инструментах или выборе профессии! 🚀',
+                greeting:    'Привет! Я помощник AI Career Agent (DeepSeek). Задайте любой вопрос о программировании, ИИ-инструментах или выборе профессии! 🚀',
                 placeholder: 'Напишите ваш вопрос...',
                 errorMsg:    'Извините, сейчас не могу ответить. Ошибка: ',
-                systemPrompt:'Ты ассистент AI Career Agent. Даёшь советы по программированию, выбору профессии и ИИ-инструментам. Отвечай на русском языке, кратко и по делу.',
+                systemPrompt: 'Ты ассистент AI Career Agent. Даёшь советы по программированию, выбору профессии и ИИ-инструментам. Отвечай на русском языке, кратко и по делу.',
                 clearBtn:    '<i class="fas fa-trash-alt"></i> Очистить историю',
             }
         };
@@ -310,7 +310,7 @@ class AIAssistant {
         this.showTypingIndicator();
 
         try {
-            const response = await this.getGeminiResponse(message);
+            const response = await this.getDeepSeekResponse(message);
             this.removeTypingIndicator();
             this.addMessageToDOM(response, 'bot');
             this.conversationHistory.push({ role: 'bot', text: response });
@@ -353,34 +353,34 @@ class AIAssistant {
         if (el) el.remove();
     }
 
-    // ===== GEMINI API =====
-    async getGeminiResponse(message) {
-        // Соңғы 10 хабарды тарих ретінде жіберу
-        const historyContents = this.conversationHistory
-            .filter(m => m.role === 'user' || m.role === 'bot')
-            .slice(-10)
-            .map(m => ({
-                role: m.role === 'bot' ? 'model' : 'user',
-                parts: [{ text: m.text }]
-            }));
+    // ===== DEEPSEEK API =====
+    async getDeepSeekResponse(message) {
+        // Соңғы 10 хабарды тарих ретінде дайындау
+        const messages = [
+            { role: 'system', content: this.t('systemPrompt') },
+            ...this.conversationHistory
+                .filter(m => m.role === 'user' || m.role === 'bot')
+                .slice(-10)
+                .map(m => ({
+                    role: m.role === 'bot' ? 'assistant' : 'user',
+                    content: m.text
+                })),
+            { role: 'user', content: message }
+        ];
 
         const body = {
-            system_instruction: {
-                parts: [{ text: this.t('systemPrompt') }]
-            },
-            contents: [
-                ...historyContents,
-                { role: 'user', parts: [{ text: message }] }
-            ],
-            generationConfig: {
-                temperature: 0.7,
-                maxOutputTokens: 1024,
-            }
+            model: 'deepseek-chat',
+            messages: messages,
+            temperature: 0.7,
+            max_tokens: 1024
         };
 
-        const resp = await fetch(GEMINI_API_URL, {
+        const resp = await fetch(DEEPSEEK_API_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+            },
             body: JSON.stringify(body)
         });
 
@@ -390,13 +390,13 @@ class AIAssistant {
         }
 
         const data = await resp.json();
-        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        const text = data?.choices?.[0]?.message?.content;
         if (text) return text;
         throw new Error('Жауап алынбады');
     }
 }
 
-// ===== Тіл утилиталары =====
+// ===== Тіл утилиталары (өзгеріссіз) =====
 window.applyPageTranslations = function(translations) {
     const lang = window.currentLang || localStorage.getItem('aiCareerLang') || 'kk';
     if (!translations || !translations[lang]) return;
