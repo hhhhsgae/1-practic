@@ -1,6 +1,6 @@
 // ai-assistant.js — AI Career Agent (Gemini API)
 
-const GEMINI_API_KEY = 'AIzaSyAr_vKgcK_2njkitA7eZbIumEjyvWocnhA';
+const GEMINI_API_KEY = 'AIzaSyBzuov-U403Z3VpwZiYxVHjl6aHx3Q_Ipc';
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 class AIAssistant {
