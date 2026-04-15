@@ -4,8 +4,228 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Әзірлеушіге арналған ЖИ-құралдары</title>
-  <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet" />
+  <!-- Font Awesome — ai-assistant.js иконкалары үшін -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* ===== Чат секциясы — виджетке сілтейтін нұсқаулық ===== */
+    .chat-section .chat-redirect-box {
+      background: #fff8f9;
+      border: 2px dashed #a9203e;
+      border-radius: 16px;
+      padding: 40px 30px;
+      text-align: center;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .chat-redirect-box .redirect-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    .chat-redirect-box h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      color: #a9203e;
+      margin-bottom: 10px;
+    }
+    .chat-redirect-box p {
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 22px;
+      line-height: 1.6;
+    }
+    .open-chat-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #a9203e;
+      color: white;
+      border: none;
+      padding: 13px 28px;
+      border-radius: 50px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Syne', sans-serif;
+      transition: background 0.2s, transform 0.2s;
+      box-shadow: 0 5px 18px rgba(169,32,62,0.3);
+    }
+    .open-chat-btn:hover {
+      background: #8f1b34;
+      transform: scale(1.04);
+    }
+
+    /* ===== Жалпы base стильдер (style.css жоқ болса) ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Space Mono', monospace;
+      background: #0f0f0f;
+      color: #f0f0f0;
+      min-height: 100vh;
+    }
+
+    .site-header {
+      padding: 32px 40px 24px;
+      border-bottom: 1px solid #222;
+    }
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .site-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+    .accent { color: #a9203e; }
+
+    .theme-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #1e1e1e;
+      color: #f0f0f0;
+      border: 1px solid #333;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Space Mono', monospace;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+    .theme-btn:hover { background: #2a2a2a; }
+
+    .cards-section, .chat-section, .reflection-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 40px;
+    }
+    .section-label {
+      font-size: 0.85rem;
+      color: #a9203e;
+      letter-spacing: 0.1em;
+      margin-bottom: 24px;
+      font-family: 'Space Mono', monospace;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    .card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      padding: 28px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .card:hover { border-color: #a9203e; transform: translateY(-3px); }
+
+    .card-tag {
+      display: inline-block;
+      background: #a9203e22;
+      color: #a9203e;
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+      letter-spacing: 0.05em;
+    }
+    .card-logo { font-size: 2rem; margin-bottom: 12px; }
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .card-desc { font-size: 0.88rem; line-height: 1.7; color: #aaa; margin-bottom: 16px; }
+    .card-features {
+      list-style: none;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .card-features li {
+      font-size: 0.82rem;
+      color: #bbb;
+      padding-left: 14px;
+      position: relative;
+    }
+    .card-features li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: #a9203e;
+    }
+    .card-link {
+      display: inline-block;
+      color: #a9203e;
+      font-size: 0.85rem;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .card-link:hover { border-color: #a9203e; }
+
+    /* Chat section */
+    .chat-section { border-top: 1px solid #1e1e1e; }
+
+    /* Reflection */
+    .reflection-section { border-top: 1px solid #1e1e1e; }
+    .reflection-card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      padding: 36px;
+    }
+    .reflection-card h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem;
+      margin-bottom: 28px;
+      color: #f0f0f0;
+    }
+    .reflection-block { margin-bottom: 24px; }
+    .reflection-block h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      color: #a9203e;
+      margin-bottom: 10px;
+    }
+    .reflection-block p { font-size: 0.9rem; line-height: 1.75; color: #bbb; }
+
+    .site-footer {
+      text-align: center;
+      padding: 24px;
+      border-top: 1px solid #1e1e1e;
+      font-size: 0.8rem;
+      color: #555;
+    }
+
+    /* Light theme */
+    body.light {
+      background: #f5f5f5;
+      color: #111;
+    }
+    body.light .card,
+    body.light .reflection-card {
+      background: #fff;
+      border-color: #e0e0e0;
+    }
+    body.light .theme-btn { background: #efefef; color: #111; border-color: #ddd; }
+    body.light .card-desc { color: #555; }
+    body.light .card-features li { color: #444; }
+    body.light .reflection-block p { color: #444; }
+    body.light .site-footer { color: #999; border-color: #ddd; }
+    body.light .chat-redirect-box { background: #fff8f9; }
+  </style>
 </head>
 <body>
 
@@ -91,35 +311,19 @@
     </div>
   </section>
 
-  <!-- ===== AI CHAT SECTION ===== -->
+  <!-- ===== AI CHAT SECTION — виджетке бағытталған ===== -->
   <section class="chat-section">
     <div class="section-label">// ЖИ-чат</div>
-    <div class="chat-wrapper">
-      <div class="chat-header">
-        <span class="chat-status-dot"></span>
-        <span>GitHub Models AI байланысы</span>
-        <span class="counter-badge">Сұраныстар: <strong id="requestCount">0</strong></span>
-      </div>
-      <div class="chat-messages" id="chatMessages">
-        <div class="chat-msg assistant">
-          <div class="msg-bubble">Сәлем! Мен GitHub Models AI-мін. Бағдарламалау немесе ЖИ туралы кез келген сұрақ қойыңыз! 🚀</div>
-        </div>
-      </div>
-      <div class="chat-input-row">
-        <input
-          type="text"
-          id="userInput"
-          class="chat-input"
-          placeholder="Сұрағыңызды жазыңыз..."
-          autocomplete="off"
-        />
-        <button id="sendBtn" class="send-btn">Жіберу</button>
-      </div>
-      <p class="api-note">
-        ✅ GitHub Models API — тегін. Чат жұмыс істеуі үшін GitHub токені қажет.
-        Токенді <a href="https://github.com/settings/tokens" target="_blank">GitHub Settings → Tokens</a> сайтынан алыңыз.
-        <strong>Рұқсат: models:read</strong>
+    <div class="chat-redirect-box">
+      <div class="redirect-icon">🤖</div>
+      <h3>AI Көмекші дайын!</h3>
+      <p>
+        Чат виджеті беттің төменгі оң бұрышында орналасқан.<br/>
+        Бағдарламалау, ЖИ-құралдары немесе мамандық туралы сұрақ қойыңыз.
       </p>
+      <button class="open-chat-btn" onclick="window.assistant && window.assistant.openChat()">
+        <i class="fas fa-robot"></i> Чатты ашу
+      </button>
     </div>
   </section>
 
@@ -162,6 +366,25 @@
     <p>Практикалық жұмыс №1 — ЖИ веб-әзірлеуде &nbsp;|&nbsp; 2025</p>
   </footer>
 
-  <script src="script.js"></script>
+  <!-- ===== SCRIPTS ===== -->
+
+  <!-- Тема ауыстыру -->
+  <script>
+    const themeBtn = document.getElementById('themeToggle');
+    const icon = themeBtn.querySelector('.theme-icon');
+    const savedTheme = localStorage.getItem('siteTheme');
+    if (savedTheme === 'light') { document.body.classList.add('light'); icon.textContent = '🌙'; }
+
+    themeBtn.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const isLight = document.body.classList.contains('light');
+      icon.textContent = isLight ? '🌙' : '☀';
+      localStorage.setItem('siteTheme', isLight ? 'light' : 'dark');
+    });
+  </script>
+
+  <!-- AI Assistant виджеті (ai-assistant.js) -->
+  <script src="ai-assistant.js"></script>
+
 </body>
 </html>
