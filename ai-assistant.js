@@ -1,86 +1,83 @@
-// ai-assistant.js — AI Career Agent (DeepSeek API)
+// ============================================================
+// AI Assistant Widget — Groq API (тегін, CORS жоқ)
+// Тіркелу: https://console.groq.com → API Keys → Create API Key
+// ============================================================
 
-const DEEPSEEK_API_KEY = 'sk-0a18f1d81d674d4f9a02eb5aad6cbe73'; // ← ӨЗ КЛЮЧЫҢЫЗДЫ ОСЫ ЖЕРГЕ ҚОЙЫҢЫЗ
-const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
+const GROQ_API_KEY = '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'; // ← console.groq.com
+const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_MODEL   = 'llama3-8b-8192'; // тегін, жылдам
+
+// ─── Балама: Anthropic Claude (console.anthropic.com → $5 тегін) ───
+// const CLAUDE_API_KEY = 'sk-ant-...';
+// const CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';
+// const CLAUDE_MODEL   = 'claude-haiku-3-5-20241022';
 
 class AIAssistant {
     constructor() {
         this.isOpen = false;
         this.conversationHistory = [];
-        this.lang = window.currentLang || localStorage.getItem('aiCareerLang') || 'kk';
-        if (window.currentLang !== this.lang) {
-            window.currentLang = this.lang;
-        }
+        this.lang = localStorage.getItem('aiCareerLang') || 'kk';
 
         this.i18n = {
             kk: {
-                btnLabel:    '<i class="fas fa-robot"></i> AI Көмекші',
-                headerTitle: '<i class="fas fa-microchip"></i> AI Career Көмекші',
-                greeting:    'Сәлем! Мен AI Career Agent көмекшісімін (DeepSeek). Бағдарламалау, ЖИ-құралдары немесе мамандық туралы кез келген сұрақ қойыңыз! 🚀',
+                btnLabel:    'AI Көмекші',
+                headerTitle: 'AI Career Көмекші',
+                greeting:    'Сәлем! Мен AI көмекшісімін. Бағдарламалау, ЖИ-құралдары немесе мамандық туралы кез келген сұрақ қойыңыз! 🚀',
                 placeholder: 'Сұрағыңызды жазыңыз...',
-                errorMsg:    'Кешіріңіз, қазір жауап бере алмаймын. Қате: ',
-                systemPrompt: 'Сен AI Career Agent ассистентісің. Бағдарламалау, мамандық таңдау, ЖИ-құралдары туралы кеңес бересің. Қазақ тілінде, қысқа және пайдалы жауап бер.',
-                clearBtn:    '<i class="fas fa-trash-alt"></i> Тарихты тазалау',
+                errorMsg:    'Қате орын алды: ',
+                systemPrompt:'Сен пайдалы AI көмекшісің. Бағдарламалау, мамандық таңдау, ЖИ-құралдары туралы кеңес бер. Қазақ тілінде, қысқа және нақты жауап бер.',
+                clearBtn:    'Тарихты тазалау',
+                thinking:    'Жауап жазылуда...',
             },
             ru: {
-                btnLabel:    '<i class="fas fa-robot"></i> AI Помощник',
-                headerTitle: '<i class="fas fa-microchip"></i> AI Career Помощник',
-                greeting:    'Привет! Я помощник AI Career Agent (DeepSeek). Задайте любой вопрос о программировании, ИИ-инструментах или выборе профессии! 🚀',
+                btnLabel:    'AI Помощник',
+                headerTitle: 'AI Career Помощник',
+                greeting:    'Привет! Я AI-помощник. Задайте любой вопрос о программировании, ИИ-инструментах или выборе профессии! 🚀',
                 placeholder: 'Напишите ваш вопрос...',
-                errorMsg:    'Извините, сейчас не могу ответить. Ошибка: ',
-                systemPrompt: 'Ты ассистент AI Career Agent. Даёшь советы по программированию, выбору профессии и ИИ-инструментам. Отвечай на русском языке, кратко и по делу.',
-                clearBtn:    '<i class="fas fa-trash-alt"></i> Очистить историю',
+                errorMsg:    'Произошла ошибка: ',
+                systemPrompt:'Ты полезный AI-ассистент. Даёшь советы по программированию, выбору профессии и ИИ-инструментам. Отвечай на русском языке, кратко и по делу.',
+                clearBtn:    'Очистить историю',
+                thinking:    'Печатаю ответ...',
             }
         };
 
         this.loadHistory();
-        this.createChatButton();
+        this.createWidget();
 
-        window.addEventListener('languageChanged', (e) => {
-            this.updateLanguage(e.detail.lang);
-        });
+        window.addEventListener('languageChanged', (e) => this.updateLanguage(e.detail.lang));
     }
 
     t(key) {
-        return (this.i18n[this.lang] && this.i18n[this.lang][key]) ? this.i18n[this.lang][key] : key;
+        return (this.i18n[this.lang]?.[key]) || key;
     }
 
     updateLanguage(newLang) {
         if (this.lang === newLang) return;
         this.lang = newLang;
         localStorage.setItem('aiCareerLang', this.lang);
-
-        const btn = document.querySelector('.ai-assistant-button');
-        if (btn) btn.innerHTML = this.t('btnLabel');
-
-        const headerSpan = document.querySelector('.ai-chat-header span');
-        if (headerSpan) headerSpan.innerHTML = this.t('headerTitle');
-
-        const clearBtn = document.getElementById('aiClearBtn');
-        if (clearBtn) clearBtn.innerHTML = this.t('clearBtn');
-
-        const input = document.getElementById('aiUserInput');
-        if (input) input.placeholder = this.t('placeholder');
-
         this.clearHistory();
+
+        const btn = document.querySelector('.ai-assistant-button span');
+        if (btn) btn.textContent = this.t('btnLabel');
+        const hdr = document.querySelector('.ai-chat-header span');
+        if (hdr) hdr.textContent = this.t('headerTitle');
+        const inp = document.getElementById('aiUserInput');
+        if (inp) inp.placeholder = this.t('placeholder');
+        const clr = document.getElementById('aiClearBtn');
+        if (clr) clr.textContent = this.t('clearBtn');
     }
 
     loadHistory() {
         try {
             const saved = localStorage.getItem('aiCareerChatHistory');
             if (saved) this.conversationHistory = JSON.parse(saved);
-        } catch(e) {
-            this.conversationHistory = [];
-        }
+        } catch { this.conversationHistory = []; }
     }
 
     saveHistory() {
         try {
-            const trimmed = this.conversationHistory.slice(-50);
-            localStorage.setItem('aiCareerChatHistory', JSON.stringify(trimmed));
-        } catch(e) {
-            console.warn('Could not save history:', e);
-        }
+            localStorage.setItem('aiCareerChatHistory', JSON.stringify(this.conversationHistory.slice(-40)));
+        } catch(e) { console.warn('History save error:', e); }
     }
 
     clearHistory() {
@@ -93,23 +90,186 @@ class AIAssistant {
         }
     }
 
-    createChatButton() {
-        const oldBtn = document.querySelector('.ai-assistant-button');
-        const oldWin = document.getElementById('aiChatWindow');
-        if (oldBtn) oldBtn.remove();
-        if (oldWin) oldWin.remove();
+    addStyles() {
+        const existing = document.getElementById('aiAssistantStyles');
+        if (existing) existing.remove();
 
-        const chatButton = document.createElement('div');
-        chatButton.className   = 'ai-assistant-button';
-        chatButton.innerHTML   = this.t('btnLabel');
-        chatButton.onclick     = () => this.toggleChat();
+        const style = document.createElement('style');
+        style.id = 'aiAssistantStyles';
+        style.textContent = `
+            .ai-assistant-button {
+                position: fixed; bottom: 28px; right: 28px;
+                background: #a9203e; color: #fff;
+                padding: 13px 24px; border-radius: 50px;
+                cursor: pointer; font-weight: 600; font-size: 15px;
+                box-shadow: 0 6px 22px rgba(169,32,62,0.40);
+                z-index: 9999; transition: transform .2s, background .2s;
+                display: flex; align-items: center; gap: 9px;
+                font-family: 'Syne', 'Inter', sans-serif;
+                user-select: none; border: none;
+            }
+            .ai-assistant-button:hover { transform: scale(1.05); background: #8f1b34; }
+            .ai-assistant-button svg { width:18px; height:18px; flex-shrink:0; }
 
-        const chatWindow = document.createElement('div');
-        chatWindow.className   = 'ai-assistant-window';
-        chatWindow.id          = 'aiChatWindow';
-        chatWindow.innerHTML = `
+            .ai-assistant-window {
+                position: fixed; bottom: 95px; right: 28px;
+                width: 360px; height: 520px;
+                background: #fff; border-radius: 20px;
+                box-shadow: 0 12px 48px rgba(0,0,0,0.18);
+                z-index: 10000; display: none; flex-direction: column;
+                overflow: hidden; border: 1px solid #ececec;
+                font-family: 'Space Mono', 'Inter', monospace;
+                animation: aiSlideIn .25s ease;
+            }
+            .ai-assistant-window.open { display: flex; }
+            @keyframes aiSlideIn {
+                from { opacity:0; transform:translateY(12px); }
+                to   { opacity:1; transform:translateY(0); }
+            }
+
+            .ai-chat-header {
+                background: #a9203e; color: #fff;
+                padding: 16px 18px; display: flex;
+                align-items: center; justify-content: space-between;
+                font-weight: 700; font-size: 14px; flex-shrink: 0;
+                font-family: 'Syne', sans-serif;
+            }
+            .ai-header-left { display:flex; align-items:center; gap:9px; }
+            .ai-status-dot {
+                width:8px; height:8px; border-radius:50%;
+                background:#4ade80; animation: aiBlink 2s infinite;
+            }
+            @keyframes aiBlink {
+                0%,100%{opacity:1} 50%{opacity:.4}
+            }
+            .ai-close-btn {
+                background: rgba(255,255,255,.18); border: none;
+                color: #fff; width: 28px; height: 28px; border-radius: 50%;
+                cursor: pointer; font-size: 17px;
+                display: flex; align-items: center; justify-content: center;
+                transition: background .2s; padding: 0; line-height: 1;
+            }
+            .ai-close-btn:hover { background: rgba(255,255,255,.32); }
+
+            .ai-chat-messages {
+                flex: 1; overflow-y: auto;
+                padding: 14px; display: flex;
+                flex-direction: column; gap: 10px;
+            }
+            .ai-chat-messages::-webkit-scrollbar { width:4px; }
+            .ai-chat-messages::-webkit-scrollbar-thumb { background:#ddd; border-radius:4px; }
+
+            .ai-message { display:flex; align-items:flex-start; gap:8px; }
+            .ai-message.user { flex-direction:row-reverse; }
+            .ai-avatar {
+                width:30px; height:30px; border-radius:50%;
+                background:#f0f0f0; display:flex;
+                align-items:center; justify-content:center;
+                font-size:13px; flex-shrink:0;
+            }
+            .ai-message.bot .ai-avatar { background:#a9203e; color:#fff; }
+            .ai-message-content {
+                background:#f4f4f4; border-radius:14px;
+                padding:9px 13px; font-size:13px; line-height:1.55;
+                max-width:80%; color:#111; word-break:break-word;
+            }
+            .ai-message.user .ai-message-content {
+                background:#a9203e; color:#fff;
+                border-radius:14px 4px 14px 14px;
+            }
+            .ai-message.bot .ai-message-content { border-radius:4px 14px 14px 14px; }
+
+            .ai-clear-row {
+                padding: 5px 14px; border-top: 1px solid #f0f0f0;
+                display: flex; justify-content: flex-end; flex-shrink: 0;
+            }
+            .ai-clear-btn {
+                background:none; border:none; color:#bbb;
+                font-size:11px; cursor:pointer; padding:4px 6px;
+                transition:color .2s; font-family:inherit;
+            }
+            .ai-clear-btn:hover { color:#a9203e; }
+
+            .ai-chat-input {
+                padding: 11px 14px; border-top: 1px solid #f0f0f0;
+                display: flex; gap: 9px; align-items: center; flex-shrink: 0;
+            }
+            .ai-chat-input input {
+                flex:1; border:1.5px solid #e5e5e5; border-radius:20px;
+                padding:9px 15px; font-size:13px; outline:none;
+                transition:border-color .2s; background:#fafafa;
+                font-family:inherit; color:#111;
+            }
+            .ai-chat-input input:focus { border-color:#a9203e; }
+            .ai-send-btn {
+                background:#a9203e; color:#fff; border:none;
+                width:38px; height:38px; border-radius:50%;
+                cursor:pointer; display:flex; align-items:center;
+                justify-content:center; transition:all .2s; flex-shrink:0;
+            }
+            .ai-send-btn:hover { background:#8f1b34; transform:scale(1.06); }
+            .ai-send-btn:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+            .ai-send-btn svg { width:16px; height:16px; }
+
+            .ai-typing {
+                display:flex; gap:5px; padding:10px 13px;
+                background:#f4f4f4; border-radius:4px 14px 14px 14px;
+                width:fit-content; align-items:center;
+            }
+            .ai-typing span {
+                width:6px; height:6px; background:#a9203e;
+                border-radius:50%; animation:aiDot 1.2s infinite ease-in-out;
+            }
+            .ai-typing span:nth-child(2) { animation-delay:.2s; }
+            .ai-typing span:nth-child(3) { animation-delay:.4s; }
+            @keyframes aiDot {
+                0%,60%,100%{transform:translateY(0);opacity:.5}
+                30%{transform:translateY(-7px);opacity:1}
+            }
+
+            .ai-error-note {
+                font-size:11px; color:#999; padding:5px 14px 8px;
+                text-align:center; line-height:1.4;
+            }
+            .ai-error-note a { color:#a9203e; }
+
+            @media (max-width:480px) {
+                .ai-assistant-window { right:10px; left:10px; width:auto; bottom:85px; }
+                .ai-assistant-button { right:14px; bottom:18px; padding:11px 18px; font-size:13px; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    createWidget() {
+        document.querySelector('.ai-assistant-button')?.remove();
+        document.getElementById('aiChatWindow')?.remove();
+
+        this.addStyles();
+
+        const btn = document.createElement('button');
+        btn.className = 'ai-assistant-button';
+        btn.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2a9 9 0 1 0 9 9" stroke-linecap="round"/>
+                <circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/>
+                <circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/>
+                <path d="M9 14s1 1.5 3 1.5 3-1.5 3-1.5" stroke-linecap="round"/>
+                <path d="M18 2v4m2-2h-4" stroke-linecap="round"/>
+            </svg>
+            <span>${this.t('btnLabel')}</span>
+        `;
+        btn.onclick = () => this.toggleChat();
+
+        const win = document.createElement('div');
+        win.className = 'ai-assistant-window';
+        win.id = 'aiChatWindow';
+        win.innerHTML = `
             <div class="ai-chat-header">
-                <span>${this.t('headerTitle')}</span>
+                <div class="ai-header-left">
+                    <div class="ai-status-dot"></div>
+                    <span>${this.t('headerTitle')}</span>
+                </div>
                 <button id="aiCloseBtn" class="ai-close-btn">×</button>
             </div>
             <div class="ai-chat-messages" id="aiChatMessages"></div>
@@ -118,13 +278,17 @@ class AIAssistant {
             </div>
             <div class="ai-chat-input">
                 <input type="text" id="aiUserInput" placeholder="${this.t('placeholder')}">
-                <button id="aiSendBtn" class="ai-send-btn"><i class="fas fa-paper-plane"></i></button>
+                <button id="aiSendBtn" class="ai-send-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="22" y1="2" x2="11" y2="13"/>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                </button>
             </div>
         `;
 
-        this.addStyles();
-        document.body.appendChild(chatButton);
-        document.body.appendChild(chatWindow);
+        document.body.appendChild(btn);
+        document.body.appendChild(win);
 
         document.getElementById('aiCloseBtn').addEventListener('click', (e) => {
             e.stopPropagation();
@@ -133,7 +297,7 @@ class AIAssistant {
         document.getElementById('aiClearBtn').addEventListener('click', () => this.clearHistory());
         document.getElementById('aiSendBtn').addEventListener('click', () => this.sendMessage());
         document.getElementById('aiUserInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.sendMessage();
+            if (e.key === 'Enter' && !e.shiftKey) this.sendMessage();
         });
 
         this.renderHistory();
@@ -146,302 +310,128 @@ class AIAssistant {
         if (this.conversationHistory.length === 0) {
             this.addMessage(this.t('greeting'), 'bot');
         } else {
-            this.conversationHistory.forEach(msg => this.addMessageToDOM(msg.text, msg.role));
+            this.conversationHistory.forEach(m => this.appendToDOM(m.text, m.role));
         }
     }
 
-    addStyles() {
-        const existing = document.getElementById('aiAssistantStyles');
-        if (existing) existing.remove();
+    addMessage(text, role) { this.appendToDOM(text, role); }
 
-        const styles = document.createElement('style');
-        styles.id = 'aiAssistantStyles';
-        styles.textContent = `
-            .ai-assistant-button {
-                position: fixed; bottom: 30px; right: 30px;
-                background: #a9203e; color: white !important;
-                padding: 15px 25px; border-radius: 50px;
-                cursor: pointer; font-weight: 600;
-                box-shadow: 0 5px 20px rgba(169,32,62,0.4);
-                z-index: 9999; transition: all 0.3s ease;
-                display: flex; align-items: center; gap: 10px;
-                font-size: 16px; font-family: 'Inter', sans-serif;
-                user-select: none;
-            }
-            .ai-assistant-button:hover { transform: scale(1.05); background: #8f1b34; }
-
-            .ai-assistant-window {
-                position: fixed; bottom: 100px; right: 30px;
-                width: 360px; height: 520px;
-                background: #ffffff; border-radius: 20px;
-                box-shadow: 0 10px 40px rgba(0,0,0,0.25);
-                z-index: 10000; display: none;
-                flex-direction: column; overflow: hidden;
-                border: 1px solid #eaeaea;
-                font-family: 'Inter', sans-serif;
-            }
-            .ai-assistant-window.open { display: flex; }
-
-            .ai-chat-header {
-                background: #a9203e; color: white;
-                padding: 18px 20px; display: flex;
-                align-items: center; justify-content: space-between;
-                font-weight: 600; font-size: 15px;
-                flex-shrink: 0;
-            }
-            .ai-close-btn {
-                background: rgba(255,255,255,0.2); border: none;
-                color: white; width: 28px; height: 28px;
-                border-radius: 50%; cursor: pointer;
-                font-size: 16px; display: flex;
-                align-items: center; justify-content: center;
-                transition: background 0.2s;
-            }
-            .ai-close-btn:hover { background: rgba(255,255,255,0.35); }
-
-            .ai-chat-messages {
-                flex: 1; overflow-y: auto;
-                padding: 16px; display: flex;
-                flex-direction: column; gap: 12px;
-            }
-            .ai-message { display: flex; align-items: flex-start; gap: 10px; }
-            .ai-message.user { flex-direction: row-reverse; }
-            .ai-avatar {
-                width: 32px; height: 32px; border-radius: 50%;
-                background: #f0f0f0; display: flex;
-                align-items: center; justify-content: center;
-                font-size: 16px; flex-shrink: 0;
-            }
-            .ai-message.bot .ai-avatar { background: #a9203e; color: white; }
-            .ai-message-content {
-                background: white; border: 1px solid #e5e5e5;
-                border-radius: 16px; padding: 10px 14px;
-                font-size: 14px; line-height: 1.5;
-                max-width: 78%; color: #222;
-            }
-            .ai-message.user .ai-message-content {
-                background: #a9203e; color: white;
-                border-color: #a9203e;
-                border-radius: 16px 4px 16px 16px;
-            }
-            .ai-message.bot .ai-message-content { border-radius: 4px 16px 16px 16px; }
-
-            .ai-clear-row {
-                padding: 6px 16px; border-top: 1px solid #f0f0f0;
-                display: flex; justify-content: flex-end; flex-shrink: 0;
-            }
-            .ai-clear-btn {
-                background: none; border: none; color: #aaa;
-                font-size: 12px; cursor: pointer; padding: 4px 8px;
-                font-family: 'Inter', sans-serif; transition: color 0.2s;
-            }
-            .ai-clear-btn:hover { color: #a9203e; }
-
-            .ai-chat-input {
-                padding: 12px 16px; border-top: 1px solid #f0f0f0;
-                display: flex; gap: 10px; align-items: center; flex-shrink: 0;
-            }
-            .ai-chat-input input {
-                flex: 1; border: 1.5px solid #eaeaea;
-                border-radius: 20px; padding: 10px 16px;
-                font-size: 14px; font-family: 'Inter', sans-serif;
-                outline: none; transition: border-color 0.2s;
-                background: #fcfcfc;
-            }
-            .ai-chat-input input:focus { border-color: #a9203e; }
-
-            .ai-send-btn {
-                background: #a9203e; color: white;
-                border: none; width: 40px; height: 40px;
-                border-radius: 50%; cursor: pointer;
-                font-size: 18px; display: flex;
-                align-items: center; justify-content: center;
-                transition: all 0.2s; flex-shrink: 0;
-            }
-            .ai-send-btn:hover { background: #8f1b34; transform: scale(1.05); }
-
-            .typing-indicator {
-                display: flex; gap: 5px;
-                padding: 10px 14px; background: white;
-                border-radius: 16px; border: 1px solid #e5e5e5;
-                width: fit-content; align-items: center;
-            }
-            .typing-indicator span {
-                width: 7px; height: 7px; background: #a9203e;
-                border-radius: 50%; animation: aiTyping 1s infinite ease-in-out;
-            }
-            .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-            .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-            @keyframes aiTyping {
-                0%,60%,100% { transform:translateY(0); opacity:0.5; }
-                30% { transform:translateY(-8px); opacity:1; }
-            }
-
-            @media (max-width: 480px) {
-                .ai-assistant-window { right: 10px; left: 10px; width: auto; bottom: 90px; }
-                .ai-assistant-button { right: 16px; bottom: 20px; padding: 12px 20px; font-size: 14px; }
-            }
-        `;
-        document.head.appendChild(styles);
-    }
-
-    toggleChat() { this.isOpen ? this.closeChat() : this.openChat(); }
-
-    openChat() {
-        const win = document.getElementById('aiChatWindow');
-        if (win) { win.classList.add('open'); this.isOpen = true; }
-        const input = document.getElementById('aiUserInput');
-        if (input) setTimeout(() => input.focus(), 100);
-    }
-
-    closeChat() {
-        const win = document.getElementById('aiChatWindow');
-        if (win) { win.classList.remove('open'); this.isOpen = false; }
-    }
-
-    async sendMessage() {
-        const input = document.getElementById('aiUserInput');
-        const message = input.value.trim();
-        if (!message) return;
-
-        this.addMessageToDOM(message, 'user');
-        this.conversationHistory.push({ role: 'user', text: message });
-        input.value = '';
-        this.showTypingIndicator();
-
-        try {
-            const response = await this.getDeepSeekResponse(message);
-            this.removeTypingIndicator();
-            this.addMessageToDOM(response, 'bot');
-            this.conversationHistory.push({ role: 'bot', text: response });
-            this.saveHistory();
-        } catch(error) {
-            this.removeTypingIndicator();
-            this.addMessageToDOM(this.t('errorMsg') + error.message, 'bot');
-        }
-    }
-
-    addMessage(text, sender) { this.addMessageToDOM(text, sender); }
-
-    addMessageToDOM(text, sender) {
+    appendToDOM(text, role) {
         const container = document.getElementById('aiChatMessages');
         if (!container) return;
         const div = document.createElement('div');
-        div.className = `ai-message ${sender}`;
-        const icon = sender === 'bot' ? '<i class="fas fa-robot"></i>' : '<i class="fas fa-user"></i>';
+        div.className = `ai-message ${role}`;
+        const icon = role === 'bot' ? '🤖' : '👤';
         div.innerHTML = `
             <div class="ai-avatar">${icon}</div>
             <div class="ai-message-content">${text}</div>
         `;
         container.appendChild(div);
         container.scrollTop = container.scrollHeight;
+        return div;
     }
 
-    showTypingIndicator() {
+    showTyping() {
         const container = document.getElementById('aiChatMessages');
-        if (!container) return;
-        const indicator = document.createElement('div');
-        indicator.className = 'ai-message bot';
-        indicator.id = 'typingIndicator';
-        indicator.innerHTML = `<div class="ai-avatar"><i class="fas fa-robot"></i></div><div class="typing-indicator"><span></span><span></span><span></span></div>`;
-        container.appendChild(indicator);
+        if (!container) return null;
+        const div = document.createElement('div');
+        div.className = 'ai-message bot';
+        div.id = 'aiTyping';
+        div.innerHTML = `<div class="ai-avatar">🤖</div><div class="ai-typing"><span></span><span></span><span></span></div>`;
+        container.appendChild(div);
         container.scrollTop = container.scrollHeight;
+        return div;
     }
 
-    removeTypingIndicator() {
-        const el = document.getElementById('typingIndicator');
-        if (el) el.remove();
+    removeTyping() {
+        document.getElementById('aiTyping')?.remove();
     }
 
-    // ===== DEEPSEEK API =====
-    async getDeepSeekResponse(message) {
-        // Соңғы 10 хабарды тарих ретінде дайындау
+    toggleChat() { this.isOpen ? this.closeChat() : this.openChat(); }
+
+    openChat() {
+        document.getElementById('aiChatWindow')?.classList.add('open');
+        this.isOpen = true;
+        setTimeout(() => document.getElementById('aiUserInput')?.focus(), 120);
+    }
+
+    closeChat() {
+        document.getElementById('aiChatWindow')?.classList.remove('open');
+        this.isOpen = false;
+    }
+
+    async sendMessage() {
+        const input = document.getElementById('aiUserInput');
+        const sendBtn = document.getElementById('aiSendBtn');
+        const message = input.value.trim();
+        if (!message) return;
+
+        this.appendToDOM(message, 'user');
+        this.conversationHistory.push({ role: 'user', text: message });
+        input.value = '';
+        sendBtn.disabled = true;
+        this.showTyping();
+
+        try {
+            const reply = await this.callGroq(message);
+            this.removeTyping();
+            this.appendToDOM(reply, 'bot');
+            this.conversationHistory.push({ role: 'bot', text: reply });
+            this.saveHistory();
+        } catch (err) {
+            this.removeTyping();
+            this.appendToDOM(this.t('errorMsg') + err.message, 'bot');
+        } finally {
+            sendBtn.disabled = false;
+            input.focus();
+        }
+    }
+
+    async callGroq(userMessage) {
         const messages = [
             { role: 'system', content: this.t('systemPrompt') },
             ...this.conversationHistory
-                .filter(m => m.role === 'user' || m.role === 'bot')
                 .slice(-10)
-                .map(m => ({
-                    role: m.role === 'bot' ? 'assistant' : 'user',
-                    content: m.text
-                })),
-            { role: 'user', content: message }
+                .map(m => ({ role: m.role === 'bot' ? 'assistant' : 'user', content: m.text })),
+            { role: 'user', content: userMessage }
         ];
 
-        const body = {
-            model: 'deepseek-chat',
-            messages: messages,
-            temperature: 0.7,
-            max_tokens: 1024
-        };
-
-        const resp = await fetch(DEEPSEEK_API_URL, {
+        const resp = await fetch(GROQ_API_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+                'Authorization': `Bearer ${GROQ_API_KEY}`
             },
-            body: JSON.stringify(body)
+            body: JSON.stringify({
+                model: GROQ_MODEL,
+                messages,
+                temperature: 0.7,
+                max_tokens: 1024
+            })
         });
 
         if (!resp.ok) {
-            const errData = await resp.json().catch(() => ({}));
-            throw new Error(errData?.error?.message || `HTTP ${resp.status}`);
+            const err = await resp.json().catch(() => ({}));
+            throw new Error(err?.error?.message || `HTTP ${resp.status}`);
         }
 
         const data = await resp.json();
         const text = data?.choices?.[0]?.message?.content;
-        if (text) return text;
-        throw new Error('Жауап алынбады');
+        if (!text) throw new Error('Жауап алынбады');
+        return text;
     }
 }
 
-// ===== Тіл утилиталары (өзгеріссіз) =====
-window.applyPageTranslations = function(translations) {
-    const lang = window.currentLang || localStorage.getItem('aiCareerLang') || 'kk';
-    if (!translations || !translations[lang]) return;
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (translations[lang][key] !== undefined) {
-            el.innerHTML = translations[lang][key];
-        }
-    });
-};
-
+// ─── Тіл утилиталары ───
 window.changeLanguage = function(lang) {
     if (window.currentLang === lang) return;
     window.currentLang = lang;
     localStorage.setItem('aiCareerLang', lang);
-    const btn = document.getElementById('globalLangBtn');
-    if (btn) btn.textContent = lang === 'kk' ? 'RU' : 'ҚЗ';
     window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
-    location.reload();
 };
 
-window.toggleLangNoReload = function() {
-    const newLang = (window.currentLang === 'kk') ? 'ru' : 'kk';
-    window.currentLang = newLang;
-    localStorage.setItem('aiCareerLang', newLang);
-    const btn = document.getElementById('globalLangBtn');
-    if (btn) btn.textContent = newLang === 'kk' ? 'RU' : 'ҚЗ';
-    window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang: newLang } }));
-};
-
-window.initGlobalLang = function() {
-    const savedLang = localStorage.getItem('aiCareerLang') || 'kk';
-    window.currentLang = savedLang;
-    const btn = document.getElementById('globalLangBtn');
-    if (btn) {
-        btn.textContent = savedLang === 'kk' ? 'RU' : 'ҚЗ';
-        btn.onclick = () => window.changeLanguage(savedLang === 'kk' ? 'ru' : 'kk');
-    }
-};
-
+// ─── Іске қосу ───
 window.addEventListener('load', () => {
     window.currentLang = localStorage.getItem('aiCareerLang') || 'kk';
-    const btn = document.getElementById('globalLangBtn');
-    if (btn && !btn.onclick) {
-        window.initGlobalLang();
-    }
     window.assistant = new AIAssistant();
 });
