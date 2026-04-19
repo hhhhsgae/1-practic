@@ -5,7 +5,7 @@
 
 const GROQ_API_KEY = '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'; // ← console.groq.com
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const GROQ_MODEL   = 'llama3-8b-8192'; // тегін, жылдам
+const GROQ_MODEL = 'llama-3.3-70b-versatile'; // тегін, жылдам
 
 // ─── Балама: Anthropic Claude (console.anthropic.com → $5 тегін) ───
 // const CLAUDE_API_KEY = 'sk-ant-...';
