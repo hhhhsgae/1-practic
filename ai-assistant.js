@@ -3,7 +3,7 @@
 // Тіркелу: https://console.groq.com → API Keys → Create API Key
 // ============================================================
 
-const GROQ_API_KEY = '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'; // ← console.groq.com
+const GROQ_API_KEY = 'GROQ_KEY_PLACEHOLDER'; // ← console.groq.com
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const GROQ_MODEL = 'llama-3.3-70b-versatile'; // тегін, жылдам
 
