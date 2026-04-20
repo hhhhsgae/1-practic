@@ -3,155 +3,478 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Әзірлеушіге арналған ЖИ-құралдары</title>
+  <title>DEV × AI — Әзірлеушіге арналған ЖИ-құралдары</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet" />
 </head>
 <body>
+
+  <!-- ===== PIXEL CURSOR ===== -->
+  <div class="pixel-cursor" id="pixelCursor"></div>
+
+  <!-- ===== SCANLINE OVERLAY ===== -->
+  <div class="scanlines"></div>
 
   <!-- ===== HEADER ===== -->
   <header class="site-header">
     <div class="header-inner">
-      <h1 class="site-title">Әзірлеушіге арналған<br/><span class="accent">ЖИ-құралдары</span></h1>
-      <button id="themeToggle" class="theme-btn" aria-label="Тақырыпты ауыстыру">
-        <span class="theme-icon">☀</span>
-        <span class="theme-label">Тақырып</span>
-      </button>
+      <div class="logo-block">
+        <div class="pixel-logo">
+          <span class="logo-bracket">[</span>
+          <span class="logo-text">DEV<span class="accent">×</span>AI</span>
+          <span class="logo-bracket">]</span>
+        </div>
+        <p class="logo-sub">// Әзірлеушіге арналған ЖИ-құралдары</p>
+      </div>
+      <nav class="header-nav">
+        <a href="#tools" class="nav-link">&gt; ҚҰРАЛДАР</a>
+        <a href="#apis" class="nav-link">&gt; API</a>
+        <a href="#chat" class="nav-link">&gt; ЧАТ</a>
+        <a href="#reflection" class="nav-link">&gt; ТӘЖІРИБЕ</a>
+        <button id="themeToggle" class="theme-btn">
+          <span id="themeIcon">◐</span> ТАҚЫРЫП
+        </button>
+      </nav>
+    </div>
+    <!-- Request counter -->
+    <div class="request-counter">
+      <span class="counter-label">API_REQUESTS:</span>
+      <span class="counter-val" id="requestCount">000</span>
     </div>
   </header>
 
-  <!-- ===== CARDS SECTION ===== -->
-  <section class="cards-section">
-    <div class="section-label">// ЖИ-құралдар</div>
+  <!-- ===== HERO ===== -->
+  <section class="hero-section">
+    <div class="hero-inner">
+      <div class="hero-tag">// ПРАКТИКАЛЫҚ ЖҰМЫС №1</div>
+      <h1 class="hero-title">
+        <span class="blink-text">_</span>ЖИ ҚҰРАЛДАРЫ<br/>
+        <span class="accent">БАҒДАРЛАМАШЫҒА</span>
+      </h1>
+      <p class="hero-desc">
+        API кілттерін алу · Тегін vs Ақылы · Код тексеру · Нақты интеграция
+      </p>
+      <div class="hero-badges">
+        <span class="badge badge-pink">✓ Groq тегін</span>
+        <span class="badge badge-purple">✓ CORS жоқ</span>
+        <span class="badge badge-pink">✓ Жұмыс жасайды</span>
+      </div>
+    </div>
+    <div class="hero-art">
+      <div class="pixel-art-robot">
+        <div class="robot-head">
+          <div class="robot-eye left"></div>
+          <div class="robot-eye right"></div>
+          <div class="robot-mouth"></div>
+        </div>
+        <div class="robot-body">
+          <div class="robot-chest"></div>
+        </div>
+        <div class="robot-arms">
+          <div class="arm left"></div>
+          <div class="arm right"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== AI TOOLS CARDS ===== -->
+  <section class="cards-section" id="tools">
+    <div class="section-header">
+      <div class="section-tag">// 01 — ЖИ-ҚҰРАЛДАР</div>
+      <h2 class="section-title">Негізгі <span class="accent">ЖИ платформалары</span></h2>
+    </div>
     <div class="cards-grid">
 
-      <!-- Card 1: GitHub Copilot -->
+      <!-- GitHub Copilot -->
       <article class="card" data-index="0">
-        <div class="card-tag">Код</div>
-        <div class="card-logo">🤖</div>
-        <h2 class="card-title">GitHub Copilot</h2>
+        <div class="card-header">
+          <div class="card-icon">⌨</div>
+          <div class="card-meta">
+            <span class="card-tag">КОД</span>
+            <span class="card-price paid">$ АҚЫЛЫ</span>
+          </div>
+        </div>
+        <h3 class="card-title">GitHub Copilot</h3>
         <p class="card-desc">
-          GitHub Copilot — бағдарламашыларға нақты уақытта код жазуға көмектесетін AI жүйесі.
-          Ол OpenAI Codex негізінде жасалған және IDE-де тікелей жұмыс істейді.
-          Функция атауы мен түсіндірмесі бойынша толық код блоктарын ұсына алады.
+          OpenAI Codex негізіндегі AI жүйесі. IDE-де тікелей жұмыс істеп, 
+          функция аты мен комментарий бойынша толық код блоктарын ұсынады. 
+          Python, JS, Go, Rust және 30+ тілді қолдайды.
         </p>
         <ul class="card-features">
           <li>Автоматты код толықтыру</li>
-          <li>Функцияларды генерациялау</li>
-          <li>Тест жазу</li>
-          <li>30+ тіл қолдауы</li>
+          <li>Функция мен тест генерациясы</li>
+          <li>VS Code, JetBrains плагині</li>
+          <li>Chat арқылы код түсіндіру</li>
         </ul>
-        <a href="https://github.com/features/copilot" target="_blank" rel="noopener" class="card-link">
-          Ресми сайт →
+        <div class="card-pricing">
+          <div class="price-row">
+            <span class="price-label">Студент:</span>
+            <span class="price-val free">ТЕГІН (GitHub Education)</span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">Individual:</span>
+            <span class="price-val">$10/ай</span>
+          </div>
+        </div>
+        <a href="https://github.com/features/copilot" target="_blank" class="card-link">
+          &gt; РЕСМИ САЙТ →
         </a>
       </article>
 
-      <!-- Card 2: ChatGPT -->
-      <article class="card" data-index="1">
-        <div class="card-tag">Чат</div>
-        <div class="card-logo">💬</div>
-        <h2 class="card-title">ChatGPT</h2>
+      <!-- Claude -->
+      <article class="card featured" data-index="1">
+        <div class="featured-badge">★ ҰСЫНЫЛАДЫ</div>
+        <div class="card-header">
+          <div class="card-icon">◆</div>
+          <div class="card-meta">
+            <span class="card-tag">ЖИ-ЧАТ</span>
+            <span class="card-price freemium">◑ FREEMIUM</span>
+          </div>
+        </div>
+        <h3 class="card-title">Anthropic Claude</h3>
         <p class="card-desc">
-          ChatGPT — OpenAI компаниясының GPT моделіне негізделген диалогтық жасанды интеллект.
-          Ол сұрақтарға жауап беруден бастап, код жазуға, мәтін аударуға дейін кең мүмкіндіктер ұсынады.
-          GPT-4o нұсқасы суреттерді де талдай алады.
+          Anthropic компаниясының ЖИ ассистенті. Ұзын контекстпен жұмыс, 
+          код талдау, баг табу және техникалық сұрақтарда өте мықты. 
+          200K токен контекст — үлкен кодбазамен жұмыс жасауға болады.
         </p>
         <ul class="card-features">
-          <li>Сұрақ-жауап</li>
-          <li>Код жазу және түзету</li>
-          <li>Мәтін аудару</li>
-          <li>Суреттерді талдау</li>
+          <li>200K токен контекст</li>
+          <li>Код review және debugging</li>
+          <li>API: $3/1M токен (Haiku)</li>
+          <li>claude.ai тегін нұсқасы бар</li>
         </ul>
-        <a href="https://chat.openai.com" target="_blank" rel="noopener" class="card-link">
-          Ресми сайт →
+        <div class="card-pricing">
+          <div class="price-row">
+            <span class="price-label">claude.ai:</span>
+            <span class="price-val free">ТЕГІН (лимитпен)</span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">API кілт:</span>
+            <span class="price-val free">$5 бастапқы кредит</span>
+          </div>
+        </div>
+        <a href="https://claude.ai" target="_blank" class="card-link">
+          &gt; РЕСМИ САЙТ →
         </a>
       </article>
 
-      <!-- Card 3: GitHub Models -->
+      <!-- ChatGPT -->
       <article class="card" data-index="2">
-        <div class="card-tag">Зерттеу</div>
-        <div class="card-logo">✦</div>
-        <h2 class="card-title">GitHub Models</h2>
+        <div class="card-header">
+          <div class="card-icon">◉</div>
+          <div class="card-meta">
+            <span class="card-tag">ЖИ-ЧАТ</span>
+            <span class="card-price freemium">◑ FREEMIUM</span>
+          </div>
+        </div>
+        <h3 class="card-title">ChatGPT (OpenAI)</h3>
         <p class="card-desc">
-          GitHub Models — Microsoft және GitHub платформасының AI модельдері. GPT-4o, Llama 3, 
-          Phi-3 сияқты заманауи модельдерді тегін пайдалануға мүмкіндік береді.
-          Барлығы бір API арқылы қолжетімді.
+          OpenAI-дің GPT-4o моделі. Сұрақ-жауап, код жазу, суреттерді талдау 
+          мүмкіндіктері бар. Plugins арқылы кеңейтілуі мүмкін. 
+          API арқылы кез келген жобаға интеграция жасауға болады.
         </p>
         <ul class="card-features">
-          <li>GPT-4o, Llama 3, Phi-3</li>
-          <li>Тегін қолжетімділік</li>
-          <li>OpenAI үйлесімділік</li>
-          <li>Жылдам жауап</li>
+          <li>GPT-4o мультимодальды</li>
+          <li>Code interpreter</li>
+          <li>DALL-E сурет генерация</li>
+          <li>Function calling API</li>
         </ul>
-        <a href="https://github.com/marketplace/models" target="_blank" rel="noopener" class="card-link">
-          Ресми сайт →
+        <div class="card-pricing">
+          <div class="price-row">
+            <span class="price-label">chat.openai.com:</span>
+            <span class="price-val free">ТЕГІН (GPT-4o mini)</span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">API:</span>
+            <span class="price-val">$0.15/1M токен (mini)</span>
+          </div>
+        </div>
+        <a href="https://chat.openai.com" target="_blank" class="card-link">
+          &gt; РЕСМИ САЙТ →
         </a>
       </article>
 
     </div>
   </section>
 
-  <!-- ===== AI CHAT SECTION ===== -->
-  <section class="chat-section">
-    <div class="section-label">// ЖИ-чат</div>
-    <div class="chat-wrapper">
-      <div class="chat-header">
-        <span class="chat-status-dot"></span>
-        <span>GitHub Models AI байланысы</span>
-        <span class="counter-badge">Сұраныстар: <strong id="requestCount">0</strong></span>
-      </div>
-      <div class="chat-messages" id="chatMessages">
-        <div class="chat-msg assistant">
-          <div class="msg-bubble">Сәлем! Мен GitHub Models AI-мін. Бағдарламалау немесе ЖИ туралы кез келген сұрақ қойыңыз! 🚀</div>
+  <!-- ===== API KEYS SECTION ===== -->
+  <section class="api-section" id="apis">
+    <div class="section-header">
+      <div class="section-tag">// 02 — API КІЛТТЕР</div>
+      <h2 class="section-title">Қайдан алу керек & <span class="accent">Не білу керек</span></h2>
+    </div>
+
+    <div class="api-grid">
+
+      <!-- Groq -->
+      <div class="api-card best">
+        <div class="api-card-header">
+          <span class="api-name">GROQ</span>
+          <span class="api-badge free">ТОЛЫҚ ТЕГІН</span>
+        </div>
+        <div class="api-model">Llama 3.3 70b Versatile</div>
+        <div class="api-limits">
+          <div class="limit-row">
+            <span class="limit-key">Минутына сұраныс:</span>
+            <span class="limit-val">30</span>
+          </div>
+          <div class="limit-row">
+            <span class="limit-key">Күніне сұраныс:</span>
+            <span class="limit-val">1,000</span>
+          </div>
+          <div class="limit-row">
+            <span class="limit-key">Күніне токен:</span>
+            <span class="limit-val">100,000</span>
+          </div>
+          <div class="limit-row">
+            <span class="limit-key">Контекст:</span>
+            <span class="limit-val">128K токен</span>
+          </div>
+          <div class="limit-row">
+            <span class="limit-key">Баға:</span>
+            <span class="limit-val free-text">$0 (тегін)</span>
+          </div>
+          <div class="limit-row">
+            <span class="limit-key">CORS:</span>
+            <span class="limit-val good-text">✓ Проблема жоқ</span>
+          </div>
+        </div>
+        <div class="api-how">
+          <div class="api-how-title">&gt; Кілт алу жолы:</div>
+          <ol class="api-steps">
+            <li>console.groq.com сайтына кір</li>
+            <li>Google-мен тіркел (1 мин)</li>
+            <li>API Keys → Create API Key</li>
+            <li><code>gsk_...</code> басталатын ключті көшір</li>
+          </ol>
+        </div>
+        <div class="api-endpoint">
+          <span class="endpoint-label">Endpoint:</span>
+          <code>https://api.groq.com/openai/v1/chat/completions</code>
         </div>
       </div>
-      <div class="chat-input-row">
-        <input
-          type="text"
-          id="userInput"
-          class="chat-input"
-          placeholder="Сұрағыңызды жазыңыз..."
-          autocomplete="off"
-        />
-        <button id="sendBtn" class="send-btn">Жіберу</button>
+
+      <!-- Anthropic -->
+      <div class="api-card">
+        <div class="api-card-header">
+          <span class="api-name">ANTHROPIC</span>
+          <span class="api-badge credit">$5 КРЕДИТ</span>
+        </div>
+        <div class="api-model">Claude Haiku 3.5</div>
+        <div class="api-limits">
+          <div class="limit-row">
+            <span class="limit-key">Бастапқы кредит:</span>
+            <span class="limit-val free-text">$5 тегін</span>
+          </div>
+          <div class="limit-row">
+            <span class="limit-key">Haiku баға:</span>
+            <span class="limit-val">$0.80/1M токен</span>
+          </div>
+          <div class="limit-row">
+            <span class="limit-key">Контекст:</span>
+            <span class="limit-val">200K токен</span>
+          </div>
+          <div class="limit-row">
+            <span class="limit-key">Сапасы:</span>
+            <span class="limit-val good-text">★★★★★</span>
+          </div>
+          <div class="limit-row">
+            <span class="limit-key">CORS:</span>
+            <span class="limit-val warn-text">⚠ Proxy қажет</span>
+          </div>
+        </div>
+        <div class="api-how">
+          <div class="api-how-title">&gt; Кілт алу жолы:</div>
+          <ol class="api-steps">
+            <li>console.anthropic.com кір</li>
+            <li>Тіркел → карта байланыстыр</li>
+            <li>API Keys → Create Key</li>
+            <li><code>sk-ant-...</code> ключті сақта</li>
+          </ol>
+        </div>
+        <div class="api-endpoint">
+          <span class="endpoint-label">Endpoint:</span>
+          <code>https://api.anthropic.com/v1/messages</code>
+        </div>
       </div>
-      <p class="api-note">
-        ✅ GitHub Models API — тегін. Чат жұмыс істеуі үшін GitHub токені қажет.
-        Токенді <a href="https://github.com/settings/tokens" target="_blank">GitHub Settings → Tokens</a> сайтынан алыңыз.
-        <strong>Рұқсат: models:read</strong>
-      </p>
+
+      <!-- OpenAI -->
+      <div class="api-card">
+        <div class="api-card-header">
+          <span class="api-name">OPENAI</span>
+          <span class="api-badge paid-badge">АҚЫЛЫ</span>
+        </div>
+        <div class="api-model">GPT-4o mini</div>
+        <div class="api-limits">
+          <div class="limit-row">
+            <span class="limit-key">Бастапқы кредит:</span>
+            <span class="limit-val warn-text">Жоқ (2024-)</span>
+          </div>
+          <div class="limit-row">
+            <span class="limit-key">GPT-4o mini:</span>
+            <span class="limit-val">$0.15/1M токен</span>
+          </div>
+          <div class="limit-row">
+            <span class="limit-key">GPT-4o:</span>
+            <span class="limit-val">$5/1M токен</span>
+          </div>
+          <div class="limit-row">
+            <span class="limit-key">Контекст:</span>
+            <span class="limit-val">128K токен</span>
+          </div>
+          <div class="limit-row">
+            <span class="limit-key">CORS:</span>
+            <span class="limit-val warn-text">⚠ Proxy қажет</span>
+          </div>
+        </div>
+        <div class="api-how">
+          <div class="api-how-title">&gt; Кілт алу жолы:</div>
+          <ol class="api-steps">
+            <li>platform.openai.com кір</li>
+            <li>Тіркел → карта байланыстыр</li>
+            <li>API Keys → Create new key</li>
+            <li><code>sk-...</code> ключті сақта</li>
+          </ol>
+        </div>
+        <div class="api-endpoint">
+          <span class="endpoint-label">Endpoint:</span>
+          <code>https://api.openai.com/v1/chat/completions</code>
+        </div>
+      </div>
+
+      <!-- Gemini -->
+      <div class="api-card">
+        <div class="api-card-header">
+          <span class="api-name">GOOGLE GEMINI</span>
+          <span class="api-badge free">ТЕГІН TIER</span>
+        </div>
+        <div class="api-model">Gemini 1.5 Flash</div>
+        <div class="api-limits">
+          <div class="limit-row">
+            <span class="limit-key">Тегін лимит:</span>
+            <span class="limit-val free-text">60 сұраныс/мин</span>
+          </div>
+          <div class="limit-row">
+            <span class="limit-key">Баға (paid):</span>
+            <span class="limit-val">$0.075/1M токен</span>
+          </div>
+          <div class="limit-row">
+            <span class="limit-key">Контекст:</span>
+            <span class="limit-val">1M токен (!)</span>
+          </div>
+          <div class="limit-row">
+            <span class="limit-key">CORS:</span>
+            <span class="limit-val warn-text">⚠ Proxy қажет</span>
+          </div>
+        </div>
+        <div class="api-how">
+          <div class="api-how-title">&gt; Кілт алу жолы:</div>
+          <ol class="api-steps">
+            <li>aistudio.google.com кір</li>
+            <li>Google аккаунтпен кір</li>
+            <li>Get API Key басыңыз</li>
+            <li><code>AIza...</code> ключті көшір</li>
+          </ol>
+        </div>
+        <div class="api-endpoint">
+          <span class="endpoint-label">Endpoint:</span>
+          <code>generativelanguage.googleapis.com/v1beta/models/...</code>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CORS Warning Box -->
+    <div class="cors-box">
+      <div class="cors-title">⚠ CORS деген не және неге маңызды?</div>
+      <div class="cors-content">
+        <p>Браузерден API-ға тікелей сұраныс жібергенде <strong>CORS (Cross-Origin Resource Sharing)</strong> блокировкасы орын алуы мүмкін. Бұл — қауіпсіздік механизмі.</p>
+        <div class="cors-table">
+          <div class="cors-row header">
+            <span>API</span><span>Браузерден тікелей</span><span>Шешім</span>
+          </div>
+          <div class="cors-row">
+            <span>Groq</span><span class="good">✓ Жұмыс істейді</span><span>Ештеңе қажет емес</span>
+          </div>
+          <div class="cors-row">
+            <span>Anthropic</span><span class="bad">✗ CORS қатесі</span><span>Backend немесе proxy</span>
+          </div>
+          <div class="cors-row">
+            <span>OpenAI</span><span class="bad">✗ CORS қатесі</span><span>Backend немесе proxy</span>
+          </div>
+          <div class="cors-row">
+            <span>Gemini</span><span class="bad">✗ CORS қатесі</span><span>cors-anywhere proxy</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Secret Key Warning -->
+    <div class="secret-box">
+      <div class="secret-title">🔐 API КІЛТТІ ЖАСЫРУ — GitHub Secrets</div>
+      <div class="secret-content">
+        <p>Кілтті GitHub-қа ашық салмаңыз! <code>ai-assistant.js</code> файлында placeholder қолданыңыз:</p>
+        <pre class="code-block">// ai-assistant.js ішінде:
+const GROQ_API_KEY = 'GROQ_KEY_PLACEHOLDER'; // ← нақты ключ емес!
+
+// .github/workflows/deploy.yml ішінде:
+- name: Inject API key
+  run: sed -i "s|GROQ_KEY_PLACEHOLDER|${{ secrets.GROQ_API_KEY }}|g" ai-assistant.js</pre>
+        <p>GitHub → Settings → Secrets → <strong>GROQ_API_KEY</strong> деп қосыңыз.</p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ===== CHAT SECTION ===== -->
+  <section class="chat-section" id="chat">
+    <div class="section-header">
+      <div class="section-tag">// 03 — ЖИ-ЧАТ</div>
+      <h2 class="section-title">Тікелей <span class="accent">Groq API</span> арқылы</h2>
+    </div>
+    <div class="chat-redirect-box">
+      <div class="chat-redirect-icon">▶</div>
+      <h3>AI Көмекші дайын!</h3>
+      <p>Виджет оң төменгі бұрышта. Бағдарламалау, API, кез келген сұрақ қойыңыз.</p>
+      <button class="open-chat-btn" onclick="window.assistant && window.assistant.openChat()">
+        &gt; ЧАТТЫ АШУ_
+      </button>
     </div>
   </section>
 
-  <!-- ===== REFLECTION SECTION ===== -->
-  <section class="reflection-section">
-    <div class="section-label">// Менің тәжірибем</div>
+  <!-- ===== REFLECTION ===== -->
+  <section class="reflection-section" id="reflection">
+    <div class="section-header">
+      <div class="section-tag">// 04 — ТӘЖІРИБЕ</div>
+      <h2 class="section-title">Менің <span class="accent">ЖИ тәжірибем</span></h2>
+    </div>
     <div class="reflection-card">
-      <h2>Менің тәжірибем</h2>
-
       <div class="reflection-block">
-        <h3>Қандай құрал ең көп көмектесті?</h3>
-        <p>
-          Осы жұмысты орындауда маған GitHub Models ең көп көмектесті. Оның HTML, CSS және JavaScript туралы
-          түсіндірмелері өте анық және деталды болды. Мысалы, Flexbox пен CSS Grid айырмашылығын
-          нақты мысалдармен түсіндіріп берді.
+        <h3 class="reflection-q">&gt; Қандай құрал ең көп көмектесті?</h3>
+        <p class="reflection-a">
+          Бұл жұмысты орындауда маған <strong>GitHub Models</strong> (Llama 3 арқылы) ең көп көмектесті. 
+          HTML структурасын түсіндіруде, CSS Grid мен Flexbox айырмашылығын нақты мысалдармен 
+          көрсетуде өте пайдалы болды. Сонымен қатар <strong>Claude</strong> арқылы API интеграциясының 
+          логикасын терең түсіндім — fetch(), async/await және error handling концепцияларын.
         </p>
       </div>
-
       <div class="reflection-block">
-        <h3>ЖИ нені дұрыс немесе ыңғайсыз жасады?</h3>
-        <p>
-          ЖИ HTML структурасын жасауда өте жақсы жұмыс жасады, бірақ кейде тым күрделі немесе
-          контекске сай емес код ұсынды. Нақтырақ prompt жазу арқылы мұны түзетуге болады.
+        <h3 class="reflection-q">&gt; ЖИ нені дұрыс/ыңғайсыз жасады?</h3>
+        <p class="reflection-a">
+          ЖИ HTML/CSS структурасын өте жылдам жасады, бірақ кейде тым күрделі шешімдер ұсынды. 
+          Мысалы, қарапайым toggle функциясы үшін 50 жолды код берді — мен оны 10 жолға қысқарттым. 
+          Нақтырақ prompt жазу арқылы (мысалы: «тек vanilla JS, минималды код») нәтиже жақсарды. 
+          CORS мәселесін ЖИ бірден анықтамады — бұны өзім зерттеп шештім.
         </p>
       </div>
-
       <div class="reflection-block">
-        <h3>ЖИ 5 жылдан кейін әзірлеушілерді қалай өзгертеді?</h3>
-        <p>
-          Менің ойымша, 5 жылдан кейін ЖИ рутиналық код жазуды толық автоматтандырады. Әзірлеушілер
-          синтакс жаттаудан гөрі архитектура жасауға, бизнес логикасын шешуге және ЖИ шығарған кодты
-          тексеруге уақыт жұмсайды.
+        <h3 class="reflection-q">&gt; ЖИ 5 жылдан кейін әзірлеушіні қалай өзгертеді?</h3>
+        <p class="reflection-a">
+          5 жылдан кейін рутиналық код жазу толық автоматтандырылады. Әзірлеушілер синтаксис 
+          жаттаудан гөрі: архитектура жобалауға, бизнес логикасын шешуге, ЖИ генерациялаған 
+          кодты тексеруге және өнімділікті оптимизациялауға фокустанады. ЖИ — бұл жаңа «стероид», 
+          ол мықты программистті одан да мықты жасайды, бірақ негізді білмейтінді алдай алмайды.
         </p>
       </div>
     </div>
@@ -159,9 +482,18 @@
 
   <!-- ===== FOOTER ===== -->
   <footer class="site-footer">
-    <p>Практикалық жұмыс №1 — ЖИ веб-әзірлеуде &nbsp;|&nbsp; 2025</p>
+    <div class="footer-inner">
+      <div class="footer-left">
+        <span class="footer-logo">[DEV×AI]</span>
+        <span class="footer-sub">Практикалық жұмыс №1 — 2025</span>
+      </div>
+      <div class="footer-right">
+        <span class="footer-stat">API_CALLS: <span id="footerCount">0</span></span>
+      </div>
+    </div>
   </footer>
 
   <script src="script.js"></script>
+  <script src="ai-assistant.js"></script>
 </body>
 </html>

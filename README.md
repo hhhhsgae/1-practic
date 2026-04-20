@@ -1,88 +1,77 @@
-# Практикалық жұмыс №1 — Әзірлеушіге арналған ЖИ-құралдары
+# DEV×AI — Әзірлеушіге арналған ЖИ-құралдары
+
+Практикалық жұмыс №1 | ЖИ веб-әзірлеуде
 
 ## Жоба туралы
 
-Бұл жоба — ЖИ веб-әзірлеуде курсының бірінші практикалық жұмысы. Сайт GitHub Copilot, ChatGPT және Claude AI құралдары туралы ақпарат береді, сондай-ақ Claude API-мен жұмыс жасайтын интерактивті чат интерфейсін қамтиды.
-
-**Мүмкіндіктер:**
-- 3 ЖИ-құрал карточкасы (мәліметтер, мүмкіндіктер, сілтемелер)
-- Claude API-мен байланыстырылған чат
-- Жарық / Қараңғы тақырып ауыстырғыш
-- Айналдыру кезіндегі карточка анимациялары
-- Сұраныстар санауышы
-- Толық адаптивті дизайн (320px → 1200px)
-
----
+Бұл жоба бағдарламашыларға арналған ЖИ-құралдарының каталогы. Сайтта:
+- 3 негізгі ЖИ платформасының карточкалары (GitHub Copilot, Claude, ChatGPT)
+- 4 API сервисінің толық салыстырмасы (Groq, Anthropic, OpenAI, Gemini)
+- API кілт алу нұсқаулықтары
+- CORS мәселесі туралы түсіндірме
+- GitHub Secrets арқылы кілтті жасыру жолы
+- Тікелей жұмыс жасайтын AI чат (Groq API)
 
 ## Қалай іске қосу керек
 
-### 1. Репозиторийді клондау
 ```bash
-git clone https://github.com/СІЗДІҢ-АККАУНТЫҢЫЗ/ai-tools-page.git
-cd ai-tools-page
+# 1. Репозиторийді клондау
+git clone https://github.com/username/repo-name.git
+
+# 2. Папкаға кіру
+cd repo-name
+
+# 3. Браузерде ашу (Live Server немесе тікелей)
+open index.html
 ```
 
-### 2. API кілтін орнату
-`script.js` файлын ашып, бірінші жолды өзгертіңіз:
-```js
-const API_KEY = "YOUR_CLAUDE_API_KEY_HERE";
-// → Мысалы:
-const API_KEY = "sk-ant-api03-...";
-```
+### API кілт қосу (GitHub Pages үшін)
 
-API кілтін [console.anthropic.com](https://console.anthropic.com) → **API Keys** бөлімінен алыңыз.
+1. GitHub → Settings → Secrets and variables → Actions
+2. **New repository secret** → Name: `GROQ_API_KEY`, Value: `gsk_...`
+3. `ai-assistant.js` ішінде: `const GROQ_API_KEY = 'GROQ_KEY_PLACEHOLDER';`
+4. `.github/workflows/deploy.yml` файлы автоматты inject жасайды
 
-### 3. Бетті ашу
-`index.html` файлын Chrome немесе Firefox браузерінде ашыңыз.
-
-> **Ескертпе:** Браузерден тікелей API шақыру CORS шектеулеріне тап болуы мүмкін. Бұл жағдайда [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) VS Code кеңейтімін немесе Python серверін пайдаланыңыз:
-> ```bash
-> python -m http.server 8080
-> ```
-> Содан кейін браузерде `http://localhost:8080` мекенжайын ашыңыз.
-
----
-
-## Файл құрылымы
+## Файл структурасы
 
 ```
-ai-tools-page/
-├── index.html   — Бет структурасы (HTML)
-├── style.css    — Барлық стильдер + адаптивтілік
-├── script.js    — JavaScript: API, тақырып, анимациялар
-└── README.md    — Осы файл
+/
+├── index.html          — Беттің HTML структурасы
+├── style.css           — Pixel art стильдер (қызғылт + күлгін)
+├── script.js           — Тема, анимация, санауыш
+├── ai-assistant.js     — Groq API виджеті
+├── .github/
+│   └── workflows/
+│       └── deploy.yml  — GitHub Actions deploy
+└── README.md
 ```
-
----
 
 ## Пайдаланылған құралдар
 
-| Құрал | Қолданылуы |
-|---|---|
-| HTML5 | Семантикалық белгілеу |
-| CSS3 (Grid, Flexbox, Custom Properties) | Адаптивті безендіру |
-| Vanilla JavaScript (ES6+) | Интерактивтілік |
-| Fetch API | HTTP сұраныстар |
-| IntersectionObserver API | Прокрутка анимациялары |
-| Claude API | ЖИ-чат |
-| Google Fonts (Syne + Space Mono) | Типографика |
-
----
+| Құрал | Мақсаты |
+|-------|---------|
+| Groq API (Llama 3.3 70b) | AI чат бэкенді |
+| GitHub Actions | Автоматты deploy + secret inject |
+| GitHub Pages | Статикалық хостинг |
+| CSS Custom Properties | Тема жүйесі |
+| Intersection Observer API | Карточка анимациясы |
+| Press Start 2P (Google Fonts) | Pixel art шрифт |
 
 ## Мен не үйрендім
 
-1. **Fetch API** — браузерден сыртқы серверге асинхронды сұраныс жіберуді үйрендім. `async/await` синтаксисі `then/catch`-тен анағұрлым оқуға ыңғайлы екен.
+- **Fetch API** және async/await арқылы сыртқы API-ға сұраныс жіберу
+- **CORS** мәселесі деген не және оны қалай шешу керек
+- **GitHub Secrets** арқылы API кілттерді жасыру
+- **CSS Custom Properties** (айнымалылар) арқылы тема жүйесі жасау
+- **Intersection Observer** арқылы scroll анимациясын іске қосу
+- **localStorage** арқылы пайдаланушы деректерін сақтау
+- ЖИ-ды саналы пайдалану — нақты сұрақ қою, кодты өзің түсіну
 
-2. **CSS Custom Properties** — бір жерде `--accent: red` деп жазып, бүкіл сайтта қолдануға болады. Тақырып ауыстыру мүмкіндігі осы механизмге негізделген.
+## API салыстырмасы (тегін tier)
 
-3. **IntersectionObserver** — `scroll` оқиғасын тыңдамай-ақ, элемент экранға кірген сәтте кодты іске қосуға болады. Бұл әлдеқайда тиімдірек.
-
-4. **REST API интеграциясы** — JSON форматындағы сұраныс жіберу, жауапты өңдеу және қателерді дұрыс ұстану (error handling) маңызды дағды екен.
-
-5. **ЖИ-ні дұрыс қолдану** — «бәрін жаз» дегеннің орнына нақты сұрақ қою (мысалы: «CORS қатесін қалай өңдейді?») нәтижелі болатынын практика арқылы көрдім.
-
----
-
-## Лицензия
-
-Оқу мақсатында жасалған. Ешқандай лицензия шарты жоқ.
+| API | Тегін лимит | CORS | Ұсынылады |
+|-----|------------|------|-----------|
+| Groq | 1000 сұраныс/күн | ✓ | ★★★★★ |
+| Gemini | 60 сұраныс/мин | ✗ | ★★★☆☆ |
+| Anthropic | $5 кредит | ✗ | ★★★★☆ |
+| OpenAI | Жоқ | ✗ | ★★★☆☆ |
